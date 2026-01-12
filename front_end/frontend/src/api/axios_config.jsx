@@ -12,8 +12,13 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     console.log("URL del request con error:", originalRequest.url);
     // Si obtenemos 401 y aún no intentamos hacer refresh
-    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auth/login') && !originalRequest.url.includes('/auth/refresh-token')) {
-      originalRequest._retry = true;
+    //if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auth/login') && !originalRequest.url.includes('/auth/refresh-token')) {
+    
+    
+    // CÓDIGO CORREGIDO:
+    // Usamos simplemente 'login' para que sea más genérico, o la ruta exacta 'auth_routes/login'
+    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('login') && !originalRequest.url.includes('refresh-token')) {
+    originalRequest._retry = true;
     //Ver bien el tema esta para que no quede intentando hacer miles de refresh tokens y buggue la pagina
       try {
         const res = await api.post('/auth/refresh-token', {}, { withCredentials: true });

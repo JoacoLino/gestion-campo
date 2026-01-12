@@ -13,11 +13,14 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { access_token, refresh_token } = await loginUsuario(email, password);
 
+      //Cuando usaba localstorage, pero con las cookies no sirve
+      //const { access_token, refresh_token } = await loginUsuario(email, password);
       // Guardar tokens
       //localStorage.setItem('access_token', access_token);
       //localStorage.setItem('refresh_token', refresh_token);
+
+      await loginUsuario(email, password);
       console.log("Login exitoso, navegando a dashboard");
       navigate('/dashboard');
     } catch (err) {

@@ -42,15 +42,16 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './pages/login';
 import Register from './pages/register';
 import Dashboard from './pages/dashboard';
+import DashboardLayout from './layouts/dashboard_layout';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/dashboarddd" element={<h1>Bienvenido al dashboard</h1>} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path='/register' element={<Register/>}  />
+        <Route path="/dashboard" element={<DashboardLayout />}>
+        </Route>
       </Routes>
     </BrowserRouter>
   );
