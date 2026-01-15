@@ -12,4 +12,4 @@ class Insumo(Base):
     campo_id = Column(Integer, ForeignKey('campo.id'))
 
     # Relación inversa, asociando un campo con un usuario
-    campo = relationship("Campo", back_populates="insumos")
+    campos = relationship("Campo", back_populates="insumos")

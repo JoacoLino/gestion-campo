@@ -1,0 +1,276 @@
+/* src/pages/campo_selection.css */
+
+/* 1. EL CONTENEDOR PRINCIPAL (EL LIENZO) */
+.campo-selection-page {
+    /* Ocupar toda la pantalla */
+    min-height: 100vh;
+    width: 100%;
+    
+    /* Forzamos fondo claro para matar el modo oscuro del sistema */
+    background-color: #f0f2f5; 
+    
+    /* CENTRADO MÁGICO */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra horizontalmente */
+    justify-content: center; /* Centra verticalmente */
+    
+    /* Tipografía */
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #333;
+}
+
+/* 2. EL CONTENIDO (Título + Tarjetas) */
+.selection-content {
+    text-align: center; /* Para que el título quede centrado */
+    max-width: 1200px;
+    width: 90%;
+    animation: fadeIn 0.5s ease-in-out; /* Una pequeña animación de entrada */
+}
+
+.selection-content h1 {
+    font-size: 2.5rem;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.selection-content p {
+    color: #666;
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+}
+
+/* 3. LA GRILLA DE TARJETAS */
+.campos-grid {
+    display: flex;
+    gap: 25px;
+    justify-content: center; /* Las tarjetas se agrupan al centro */
+    flex-wrap: wrap; /* Si hay muchas, bajan a la siguiente línea */
+}
+
+/* 4. TARJETA DE CAMPO EXISTENTE */
+.campo-card {
+    background: white;
+    width: 260px;
+    height: 180px;
+    border-radius: 16px;
+    padding: 25px;
+    
+    /* Sombra suave profesional */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 1px solid transparent;
+    
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+    
+    /* Para acomodar el texto adentro */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.campo-card:hover {
+    transform: translateY(-8px); /* Flota hacia arriba */
+    box-shadow: 0 20px 30px rgba(0,0,0,0.1);
+    border-color: #4CAF50;
+}
+
+.card-icon {
+    font-size: 2rem;
+    background: #e8f5e9;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.campo-card h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.campo-card span {
+    font-size: 0.9rem;
+    color: #95a5a6;
+}
+
+/* 5. TARJETA DE "AGREGAR NUEVO" */
+.add-card {
+    width: 260px;
+    height: 180px;
+    border-radius: 16px;
+    
+    border: 2px dashed #cbd5e0;
+    background-color: transparent;
+    color: #718096;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-card:hover {
+    border-color: #4CAF50;
+    color: #4CAF50;
+    background-color: rgba(76, 175, 80, 0.05);
+}
+
+.add-icon {
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+/* --- BOTÓN DE LOGOUT --- */
+.logout-btn {
+    position: absolute; /* Lo sacamos del flujo para ponerlo en la esquina */
+    top: 20px;
+    right: 30px;
+    
+    background-color: transparent;
+    border: 1px solid #d1d5db;
+    color: #6b7280;
+    
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background-color: #fee2e2; /* Un rojo muy suave */
+    border-color: #f87171;
+    color: #ef4444; /* Rojo alerta */
+    transform: translateY(-2px);
+}
+
+/* Animación simple */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* --- MODAL (VENTANA EMERGENTE) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Para que quede encima de todo */
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    animation: slideUp 0.3s ease;
+}
+
+.modal-content h2 {
+    margin: 0 0 10px 0;
+    color: #1a1a1a;
+}
+
+.modal-content input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.modal-content input:focus {
+    border-color: #4CAF50;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: flex-end;
+}
+
+.btn-cancel {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #666;
+}
+
+.btn-confirm {
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-confirm:hover {
+    background: #43a047;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* src/pages/campo_selection.css */
+
+/* Aseguramos que la tarjeta sea relativa para posicionar el botón dentro */
+.campo-card {
+    position: relative; /* <--- IMPORTANTE: Agregar esto si no estaba */
+    /* ... resto de tus estilos ... */
+}
+
+/* El botón de eliminar */
+.delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #e0e0e0; /* Gris suave para que no moleste */
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    z-index: 10; /* Para que esté por encima del contenido */
+}
+
+.delete-btn:hover {
+    color: #ef4444; /* Rojo al pasar el mouse */
+    background-color: rgba(239, 68, 68, 0.1);
+    transform: scale(1.1);
+}

@@ -1,32 +1,70 @@
-import { Outlet, useNavigate } from 'react-router-dom';
-import './dashboard_layout.css'; // Tu CSS para grid/flex
+import { Outlet, useNavigate, useParams, NavLink } from 'react-router-dom';
+import api from '../api/axios_config';
+import './dashboard_layout.css'; 
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
+  // 1. CAPTURAMOS EL ID DE LA URL (ej: dashboard/5/...)
+  const { campo_id } = useParams(); 
 
-  const handleLogout = () => {
-    // Limpiar cookies/tokens
-    // navigate('/login');
+  const handleLogout = async () => {
+    try {
+        await api.post('/auth_routes/logout');
+    } catch (e) {
+        console.error(e);
+    } finally {
+        navigate('/');
+    }
   };
 
   return (
     <div className="dashboard-container">
       <aside className="sidebar">
-        <h1>Mi Campo SaaS</h1>
-        <nav>
-          <button onClick={() => navigate('/dashboard')}>Resumen</button>
-          <button onClick={() => navigate('/dashboard/animales')}>Animales</button>
-          <button onClick={() => navigate('/dashboard/sanidad')}>Sanidad</button>
+        <div className="sidebar-header">
+           <h2>🌾 Mi Campo SaaS</h2>
+           <p className="campo-badge">Campo ID: {campo_id}</p>
+        </div>
+        
+        <nav className="sidebar-nav">
+          {/* 2. USAMOS RUTAS DINÁMICAS 
+             NavLink agrega la clase "active" automáticamente si estás en esa ruta
+          */}
+          <NavLink 
+            to={`/dashboard/${campo_id}/resumen`}
+            className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+          >
+            📊 Resumen
+          </NavLink>
+
+          <NavLink 
+            to={`/dashboard/${campo_id}/animales`}
+            className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+          >
+            🐄 Ganado
+          </NavLink>
+
+          <NavLink 
+            to={`/dashboard/${campo_id}/sanidad`}
+            className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+          >
+            💉 Sanidad
+          </NavLink>
+          
+          <div className="nav-separator"></div>
+          
+          <button onClick={() => navigate('/campo-selection')} className="nav-item back-btn">
+            ⬅ Cambiar de Campo
+          </button>
         </nav>
       </aside>
       
       <main className="main-content">
         <header className="topbar">
-          <h2>Bienvenido, Usuario</h2>
-          <button onClick={handleLogout}>Salir</button>
+          <h3>Gestión del Establecimiento</h3>
+          <button className="logout-btn-small" onClick={handleLogout}>Salir</button>
         </header>
         
-        {/* Aquí se renderizarán tus componentes específicos */}
+        {/* 3. AQUÍ SE CARGARÁ "RESUMEN" O "GANADO" SEGÚN EL CLICK */}
         <div className="page-content">
           <Outlet /> 
         </div>

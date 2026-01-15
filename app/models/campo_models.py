@@ -11,7 +11,7 @@ class Campo(Base):
     user_id = Column(Integer, ForeignKey('users.id'))
 
     # Relación inversa, asociando un campo con un usuario
-    users = relationship("User", back_populates="campo")
-    lotes = relationship("Lote", back_populates="campo")
-    insumos = relationship("Insumo", back_populates="campo")
+    users = relationship("User", back_populates="campos")
+    lotes = relationship("Lote", back_populates="campos")
+    insumos = relationship("Insumo", back_populates="campos")
     #insumos = relationship("Insumo", back_populates="campo", cascade="all, delete-orphan")

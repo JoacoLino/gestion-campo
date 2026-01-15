@@ -23,9 +23,14 @@ function Register() {
         password
       });
       navigate('/');
-    } catch (err) {
-      setError('Error al registrar. ¿El email ya existe?');
+  } catch (err) {
+    console.error("EL ERROR REAL ES:", err.response); // Esto imprimirá el detalle en la consola (F12)
+    if (err.response && err.response.data && err.response.data.detail) {
+        setError(err.response.data.detail); // Muestra el mensaje que manda el Python
+    } else {
+        setError('Error de conexión o configuración (Mira la consola F12)');
     }
+  }
   };
 
   return (

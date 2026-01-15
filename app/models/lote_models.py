@@ -9,9 +9,9 @@ class Lote(Base):
     poligono = Column(String)
     cultivo = Column(String)
     # Clave foránea que hace referencia a 'id' de la tabla 'users'
-    campo_id = Column(Integer, ForeignKey('farm.id'))
+    campo_id = Column(Integer, ForeignKey('campo.id'))
 
     # Relación inversa, asociando un campo con un usuario
-    campo = relationship("Farm", back_populates="lotes")
+    campos = relationship("Campo", back_populates="lotes")
     actividades = relationship("Actividad", back_populates="lote")
     #actividades = relationship("Actividad", back_populates="lote", cascade="all, delete-orphan")

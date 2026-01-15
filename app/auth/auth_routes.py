@@ -20,6 +20,8 @@ from app.auth.auth_utils import (
 from datetime import timedelta, datetime
 from fastapi.responses import JSONResponse
 
+from fastapi import Response # Asegurate de importar Response
+
 router = APIRouter()
 """"
 #Funcion que agarra lo que el usuario pone para registrarse y crea el ususario en la base de datos
@@ -129,4 +131,9 @@ def login(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), 
     )
 
 
-
+@router.post("/logout")
+def logout(response: Response):
+    # Esto le dice al navegador: "Borra estas cookies YA"
+    response.delete_cookie(key="access_token")
+    response.delete_cookie(key="refresh_token") # Si usas refresh token también
+    return {"mensaje": "Sesión cerrada exitosamente"}
