@@ -9,7 +9,7 @@ class Actividad(Base):
     fecha = Column(Date)
     notas = Column(String)
     # Clave foránea que hace referencia a 'id' de la tabla 'users'
-    lote_id = Column(Integer, ForeignKey('lote.id'))
+    lote_id = Column(Integer, ForeignKey('lotes.id'))
 
     # Relación inversa, asociando un campo con un usuario
     lote = relationship("Lote", back_populates="actividades")

@@ -13,6 +13,16 @@ from app.routers import (
 )
 from app.auth import auth_routes
 
+from app.models import (
+    users_models,
+    campo_models,
+    lote_models,
+    animal_models,
+    actividad_models,
+    insumo_models,
+    refresh_token_models
+)
+
 app = FastAPI()
 
 # Configuración de CORS para permitir conexión con el frontend (por ejemplo en http://localhost:5173)

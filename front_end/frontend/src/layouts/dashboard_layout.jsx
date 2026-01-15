@@ -1,11 +1,32 @@
 import { Outlet, useNavigate, useParams, NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import api from '../api/axios_config';
 import './dashboard_layout.css'; 
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
-  // 1. CAPTURAMOS EL ID DE LA URL (ej: dashboard/5/...)
   const { campo_id } = useParams(); 
+  
+  const [campoInfo, setCampoInfo] = useState(null);
+  // Eliminamos el estado de loading global que bloqueaba todo
+  // const [loading, setLoading] = useState(true); 
+
+  useEffect(() => {
+    const fetchCampoInfo = async () => {
+      try {
+        // No bloqueamos la UI, solo pedimos los datos
+        const response = await api.get(`/campos/${campo_id}`, { withCredentials: true });
+        setCampoInfo(response.data);
+      } catch (error) {
+        console.error("Acceso denegado", error);
+        navigate('/campo-selection'); 
+      }
+    };
+
+    if (campo_id) {
+        fetchCampoInfo();
+    }
+  }, [campo_id, navigate]);
 
   const handleLogout = async () => {
     try {
@@ -17,23 +38,39 @@ const DashboardLayout = () => {
     }
   };
 
+  // --- BORRAMOS EL IF (LOADING) RETURN ... ---
+  // Así la estructura siempre se mantiene firme
+
   return (
     <div className="dashboard-container">
       <aside className="sidebar">
         <div className="sidebar-header">
            <h2>🌾 Mi Campo SaaS</h2>
-           <p className="campo-badge">Campo ID: {campo_id}</p>
+           
+           <div className="campo-info-box">
+             {/* Aquí mostramos "Cargando" solo en el texto, sin parpadeos */}
+             <h3 style={{fontSize: '1.1rem', margin: '10px 0 5px', color: '#2e7d32'}}>
+                {campoInfo ? campoInfo.name : "Cargando..."}
+             </h3>
+             <p className="campo-badge">
+                📍 {campoInfo ? campoInfo.location : "..."}
+             </p>
+           </div>
         </div>
         
         <nav className="sidebar-nav">
-          {/* 2. USAMOS RUTAS DINÁMICAS 
-             NavLink agrega la clase "active" automáticamente si estás en esa ruta
-          */}
           <NavLink 
             to={`/dashboard/${campo_id}/resumen`}
             className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
           >
             📊 Resumen
+          </NavLink>
+
+          <NavLink 
+            to={`/dashboard/${campo_id}/lotes`}
+            className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+          >
+            🗺️ Lotes
           </NavLink>
 
           <NavLink 
@@ -49,6 +86,8 @@ const DashboardLayout = () => {
           >
             💉 Sanidad
           </NavLink>
+
+
           
           <div className="nav-separator"></div>
           
@@ -60,11 +99,10 @@ const DashboardLayout = () => {
       
       <main className="main-content">
         <header className="topbar">
-          <h3>Gestión del Establecimiento</h3>
-          <button className="logout-btn-small" onClick={handleLogout}>Salir</button>
+            <h3>Gestión: {campoInfo?.name || "..."}</h3>
+            <button className="logout-btn-small" onClick={handleLogout}>Salir</button>
         </header>
         
-        {/* 3. AQUÍ SE CARGARÁ "RESUMEN" O "GANADO" SEGÚN EL CLICK */}
         <div className="page-content">
           <Outlet /> 
         </div>

@@ -1,16 +1,20 @@
 from pydantic import BaseModel
+from typing import Optional, List
 
-
+# Base: Datos comunes al crear y al leer
 class LoteBase(BaseModel):
     name: str
-    poligono: str
-    cultivo: str
+    superficie: float
+    cultivo: Optional[str] = None
 
+# Create: Lo que recibes del Frontend
 class LoteCreate(LoteBase):
     pass
 
+# Out: Lo que devuelves al Frontend (incluye ID)
 class LoteOut(LoteBase):
     id: int
+    campo_id: int
 
     class Config:
         orm_mode = True

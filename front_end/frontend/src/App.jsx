@@ -4,6 +4,7 @@ import Register from './pages/register';
 import CampoSelection from './pages/campo_selection';
 import DashboardLayout from './layouts/dashboard_layout';
 import Resumen from './pages/resumen'; // Asegúrate que coincida mayúscula/minúscula con tu archivo
+import GestionLotes from './pages/gestion_lotes';
 
 // --- BORRA LAS LÍNEAS QUE DECÍAN "const Resumen = ..." ---
 
@@ -25,7 +26,7 @@ function App() {
             
             {/* Aquí usamos el componente real importado */}
             <Route path="resumen" element={<Resumen />} />
-            
+            <Route path="lotes" element={<GestionLotes />} />
             <Route path="animales" element={<Ganado />} />
             <Route path="sanidad" element={<div>💉 Aquí irá Sanidad</div>} />
         </Route>

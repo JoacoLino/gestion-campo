@@ -9,7 +9,7 @@ class Insumo(Base):
     unidades = Column(Integer)
     stock = Column(Integer)
     # Clave foránea que hace referencia a 'id' de la tabla 'users'
-    campo_id = Column(Integer, ForeignKey('campo.id'))
+    campo_id = Column(Integer, ForeignKey('campos.id'))
 
     # Relación inversa, asociando un campo con un usuario
-    campos = relationship("Campo", back_populates="insumos")
+    campo = relationship("Campo", back_populates="insumos")

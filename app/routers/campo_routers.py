@@ -10,6 +10,7 @@ from app.models.campo_models import Campo
 from app.auth.auth_dependencies import obtener_usuario_actual 
 from app.models.users_models import User
 from app.crud.campos_crud import crear_campo, listar_campos, eliminar_campo
+from app.models.users_models import User # Asegurate de importar User
 
 router = APIRouter()
 
@@ -66,3 +67,25 @@ def borrar_campo(
         raise HTTPException(status_code=404, detail="Campo no encontrado o no tienes permiso")
     
     return {"mensaje": "Campo eliminado correctamente"}
+
+@router.get("/{campo_id}", response_model=CampoOut)
+def obtener_detalle_campo(
+    campo_id: int,
+    db: Session = Depends(get_db),
+    current_user_email: str = Depends(obtener_usuario_actual)
+):
+    # 1. Buscamos al usuario
+    user = db.query(User).filter(User.email == current_user_email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+    # 2. EL CANDADO DE SEGURIDAD 🔒
+    # Buscamos el campo que tenga ese ID *Y* que pertenezca a este usuario
+    campo = db.query(Campo).filter(Campo.id == campo_id, Campo.user_id == user.id).first()
+
+    # 3. Si no existe (o no es suyo), devolvemos error
+    if not campo:
+        # Usamos 404 para no dar pistas de que el campo existe pero es privado
+        raise HTTPException(status_code=404, detail="Campo no encontrado o acceso denegado")
+    
+    return campo

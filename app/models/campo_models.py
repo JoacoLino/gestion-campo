@@ -3,15 +3,18 @@ from app.database import Base
 from sqlalchemy.orm import relationship
 
 class Campo(Base):
-    __tablename__ = "campo"
-    id = Column(Integer, primary_key=True, unique=True)
+    __tablename__ = "campos" # <--- PLURAL
+
+    id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     location = Column(String)
-    # Clave foránea que hace referencia a 'id' de la tabla 'users'
-    user_id = Column(Integer, ForeignKey('users.id'))
+    
+    user_id = Column(Integer, ForeignKey('users.id')) # Apunta a tabla 'users'
 
-    # Relación inversa, asociando un campo con un usuario
-    users = relationship("User", back_populates="campos")
-    lotes = relationship("Lote", back_populates="campos")
-    insumos = relationship("Insumo", back_populates="campos")
-    #insumos = relationship("Insumo", back_populates="campo", cascade="all, delete-orphan")
+    # Relación inversa: Un campo tiene UN dueño
+    user = relationship("User", back_populates="campos") # Cambiado users -> user (es un solo dueño)
+
+    # Relaciones de propiedad: Un campo tiene MUCHOS...
+    lotes = relationship("Lote", back_populates="campo", cascade="all, delete-orphan")
+    animales = relationship("Animal", back_populates="campo", cascade="all, delete-orphan")
+    insumos = relationship("Insumo", back_populates="campo", cascade="all, delete-orphan")

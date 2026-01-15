@@ -14,6 +14,6 @@ class User(Base):
 
 
     # Relación uno a muchos (un usuario puede tener muchos campos)
-    campos = relationship("Campo", back_populates="users")
+    campos = relationship("Campo", back_populates="user") # Coincide con el singular en Campo
     refresh_tokens = relationship("RefreshToken", back_populates="users")
 
