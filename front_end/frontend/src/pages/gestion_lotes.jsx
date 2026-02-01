@@ -73,7 +73,8 @@ const GestionLotes = () => {
 
       <div className="lotes-grid">
         {lotes.map((lote) => (
-          <div key={lote.id} className="lote-card">
+          <div key={lote.id} className="lote-card" onClick={() => alert(`//Aca proximamente agregar la ruta para que lo lleve a sus animales del respectivo lote//
+          Aquí podrías ir a ver los animales del lote: ${lote.name}`)} style={{ cursor: 'pointer' }}>
             <div className="lote-header">
                 <h3>{lote.name}</h3>
                 <button className="btn-delete-mini" onClick={() => handleEliminar(lote.id)}>×</button>
@@ -89,7 +90,11 @@ const GestionLotes = () => {
                 </div>
             </div>
             <div className="lote-footer">
-                <span>0 Animales</span> {/* Próximamente lo conectaremos */}
+                {/* AHORA: Usamos el dato real */}
+                <span style={{ fontWeight: 'bold', color: lote.cantidad_animales > 0 ? '#2e7d32' : '#999' }}>
+                    🐄 {lote.cantidad_animales} Animales
+                </span>
+                
             </div>
           </div>
         ))}

@@ -8,10 +8,11 @@ from app.models import (
     users_models, 
     campo_models, 
     lote_models, 
-    animal_models,       # <--- ¡FALTABA ESTE!
+    animal_models,
     actividad_models, 
     insumo_models, 
-    refresh_token_models
+    refresh_token_models,
+    sanidad_models
 )
 
 

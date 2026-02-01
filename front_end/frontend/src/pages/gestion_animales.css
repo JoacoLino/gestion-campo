@@ -1,0 +1,58 @@
+/* src/pages/gestion_animales.css */
+
+.animales-container {
+    padding: 10px;
+}
+
+/* Tabla simple y limpia */
+.tabla-animales {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.tabla-animales th, .tabla-animales td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.tabla-animales th {
+    background-color: #f8f9fa;
+    color: #555;
+    font-weight: 600;
+}
+
+.tabla-animales tr:hover {
+    background-color: #f1f8e9; /* Verde muy suave al pasar mouse */
+}
+
+/* Badges para categorías */
+.badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.badge-vaca { background: #e3f2fd; color: #1976d2; }
+.badge-toro { background: #e8eaf6; color: #283593; }
+.badge-ternero { background: #fff3e0; color: #e65100; }
+.badge-default { background: #f5f5f5; color: #666; }
+
+/* Botón flotante para móviles (opcional) o acción principal */
+.btn-add-animal {
+    background-color: #1976d2; /* Azul para diferenciar de lotes */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

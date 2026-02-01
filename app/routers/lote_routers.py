@@ -38,6 +38,8 @@ def create_new_lote(
     return crear_lote(db, lote, campo_id)
 
 # 2. LISTAR LOTES DE UN CAMPO
+# En app/routers/lote_routers.py
+
 @router.get("/{campo_id}/", response_model=List[LoteOut])
 def read_lotes(
     campo_id: int,
@@ -45,7 +47,16 @@ def read_lotes(
     current_user_email: str = Depends(obtener_usuario_actual)
 ):
     validar_dueno_campo(campo_id, current_user_email, db)
-    return obtener_lotes_por_campo(db, campo_id)
+    
+    # 1. Obtenemos los lotes de la base de datos
+    lotes_db = obtener_lotes_por_campo(db, campo_id)
+    
+    # 2. Calculamos la cantidad de animales para cada uno
+    # SQLAlchemy hace la magia: lote.animales trae la lista gracias a la relationship
+    for lote in lotes_db:
+        lote.cantidad_animales = len(lote.animales) 
+    
+    return lotes_db
 
 # 3. ELIMINAR LOTE
 @router.delete("/{lote_id}")

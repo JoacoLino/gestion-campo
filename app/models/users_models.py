@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from app.database import Base
 from sqlalchemy.orm import relationship
-from app.models.refresh_token_models import RefreshToken  # importa la clase explícitamente
-
+from app.models.refresh_token_models import RefreshToken
 
 class User(Base):
     __tablename__ = "users"
@@ -12,8 +11,10 @@ class User(Base):
     password = Column(String)
     plan = Column(Integer)
 
-
-    # Relación uno a muchos (un usuario puede tener muchos campos)
-    campos = relationship("Campo", back_populates="user") # Coincide con el singular en Campo
+    # --- CORRECCIÓN ---
+    # Antes: farm = relationship("Farm", back_populates="users")
+    # Ahora debe coincidir con la relación definida en Campo (back_populates="user")
+    campos = relationship("Campo", back_populates="user")
+    
     refresh_tokens = relationship("RefreshToken", back_populates="users")
 

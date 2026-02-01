@@ -15,6 +15,7 @@ class LoteCreate(LoteBase):
 class LoteOut(LoteBase):
     id: int
     campo_id: int
+    cantidad_animales: int = 0
 
     class Config:
         orm_mode = True

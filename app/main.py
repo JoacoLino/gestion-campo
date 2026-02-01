@@ -9,7 +9,10 @@ from app.routers import (
     lote_routers,
     insumo_routers,
     actividad_routers,
-    protecter_routers
+    protecter_routers,
+    animal_routers,
+    sanidad_routers,
+    dashboard_routers
 )
 from app.auth import auth_routes
 
@@ -44,6 +47,9 @@ app.include_router(insumo_routers.router, prefix="/insumos", tags=["Insumos"])
 app.include_router(actividad_routers.router, prefix="/actividades", tags=["Actividades"])
 app.include_router(auth_routes.router, prefix="/auth_routes", tags=["Rutas Autenticacion"])
 app.include_router(protecter_routers.router, prefix="/protecter_routers") 
+app.include_router(animal_routers.router)
+app.include_router(sanidad_routers.router, prefix="/sanidad", tags=["sanidad"])
+app.include_router(dashboard_routers.router, prefix="/dashboard-data", tags=["dashboard"])
 for route in app.routes:
     print(f"{route.path} - {route.methods}")
 

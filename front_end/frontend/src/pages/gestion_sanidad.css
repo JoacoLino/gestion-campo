@@ -1,0 +1,85 @@
+.sanidad-container {
+    padding: 10px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.btn-add-sanidad {
+    background-color: #0288d1; /* Azul médico */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Lista de eventos */
+.timeline-sanidad {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.evento-card {
+    display: flex;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.evento-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f1f5f9;
+    padding: 8px 12px;
+    border-radius: 8px;
+    min-width: 60px;
+}
+
+.evento-date .day { font-size: 1.2rem; font-weight: bold; color: #333; }
+.evento-date .month { font-size: 0.8rem; color: #666; }
+
+.evento-info {
+    flex: 1;
+}
+
+.evento-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.badge-tipo {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: white;
+    background-color: #78909c; /* Default */
+}
+
+.badge-tipo.vacunación { background-color: #4caf50; }
+.badge-tipo.antibiótico { background-color: #f44336; }
+.badge-tipo.tacto { background-color: #ff9800; }
+
+.producto { color: #1a1a1a; font-size: 1rem; }
+
+.alcance { margin: 5px 0; font-size: 0.9rem; color: #555; }
+.notas { font-style: italic; color: #777; font-size: 0.85rem; margin: 0; }
+
+.select-animal {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff8e1; /* Un colorcito suave para resaltar */
+    font-weight: 500;
+}
