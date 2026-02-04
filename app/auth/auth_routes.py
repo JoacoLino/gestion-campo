@@ -11,6 +11,10 @@ from app.auth.auth_utils import (
 from datetime import timedelta, datetime, timezone # <--- Importante: timezone
 from fastapi.responses import JSONResponse
 
+import os
+
+IS_PRODUCTION = os.getenv("RENDER") is not None # Render define esta variable automáticamente
+
 router = APIRouter()
 
 # REGISTRO
@@ -70,8 +74,8 @@ def login(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), 
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False, # <--- False en desarrollo
-        samesite="lax",
+        secure=IS_PRODUCTION, # <--- False en desarrollo
+        samesite="none" if IS_PRODUCTION else "lax",
         max_age=60 * 15 # 15 minutos
     )
 
@@ -79,8 +83,8 @@ def login(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), 
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=False, # <--- False en desarrollo
-        samesite="lax",
+        secure=IS_PRODUCTION, # <--- False en desarrollo
+        samesite="none" if IS_PRODUCTION else "lax",
         max_age=60 * 60 * 24 * 7 # 7 días
     )
 

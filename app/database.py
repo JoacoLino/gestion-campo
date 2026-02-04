@@ -13,29 +13,36 @@ Requiere:
 - instalación de las librerías: sqlalchemy, python-dotenv, psycopg2
 """
 
-# Importaciones necesarias
-from sqlalchemy import create_engine # create_engine: Crea la conexión entre tu código y la base de datos.
-from sqlalchemy.orm import declarative_base # declarative_base: Se usa para crear clases que representan tablas (ORM).
-from sqlalchemy.orm import sessionmaker # sessionmaker: Crea sesiones de trabajo con la base de datos.
-import os # os: Se usa para acceder a variables de entorno del sistema.
-from dotenv import load_dotenv # load_dotenv: Carga automáticamente las variables definidas en un archivo .env.
-from sqlalchemy import text # text: Permite ejecutar comandos SQL crudos con SQLAlchemy 2.0+.
+import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 
+# 1. Buscamos la variable de entorno DATABASE_URL (La que nos dará Render)
+# Si no existe, usamos la local sqlite (para que siga funcionando en tu PC)
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
-load_dotenv() #Carga el archivo .env
+# Render a veces devuelve la URL empezando con "postgres://", 
+# pero SQLAlchemy moderna necesita "postgresql://"
+if SQLALCHEMY_DATABASE_URL and SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
+    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-DATABASE_URL = os.getenv("DATABASE_URL") #Obtiene la variable del entorno
+if not SQLALCHEMY_DATABASE_URL:
+    # MODO LOCAL
+    SQLALCHEMY_DATABASE_URL = "sqlite:///./gestion_campo.db"
+    connect_args = {"check_same_thread": False} # Solo para SQLite
+else:
+    # MODO NUBE (Postgres)
+    connect_args = {} 
 
-#DATABASE_URL= "postgresql://postgres:123456@localhost:5432/gestion_campo_db"
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, 
+    connect_args=connect_args
+)
 
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
 
-engine = create_engine(DATABASE_URL) #Crea el engine
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) #Crea una sesion para escribir y leer datos
-Base = declarative_base() #Todas las clases (modelos) que representan las tablas deben heredar de esta Base, así SQLAlchemy puede mapear objetos Python a tablas reales.
-
-# Dependencia para obtener la sesión de DB
-# Esta función se usa en FastAPI con Depends para crear sesiones automáticamente
-def get_db(): 
+def get_db():
     db = SessionLocal()
     try:
         yield db

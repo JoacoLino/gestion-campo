@@ -30,12 +30,18 @@ from app.models import (
 
 app = FastAPI()
 
+# Permitir orígenes
+origins = [
+    "http://localhost:5173", # Tu local
+    "https://mi-campo-app.vercel.app", # <--- (EJEMPLO) Tu futuro dominio de Vercel
+    # Puedes agregar "*" temporalmente para probar, pero mejor ser específico
+]
+
 # Configuración de CORS para permitir conexión con el frontend (por ejemplo en http://localhost:5173)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Reemplazá con la URL de tu frontend si cambia
+    allow_origins=["*"],  # Reemplazá con la URL de tu frontend si cambia
     allow_credentials=True,
-    #allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
