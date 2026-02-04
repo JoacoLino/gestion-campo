@@ -18,3 +18,4 @@ class Campo(Base):
     lotes = relationship("Lote", back_populates="campo", cascade="all, delete-orphan")
     animales = relationship("Animal", back_populates="campo", cascade="all, delete-orphan")
     insumos = relationship("Insumo", back_populates="campo", cascade="all, delete-orphan")
+    eventos_agenda = relationship("AgendaEvento", back_populates="campo")

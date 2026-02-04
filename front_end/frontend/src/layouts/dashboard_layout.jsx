@@ -87,6 +87,13 @@ const DashboardLayout = () => {
             💉 Sanidad
           </NavLink>
 
+          <NavLink 
+            to={`/dashboard/${campo_id}/agenda`}
+            className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+          >
+            📅 Agenda
+          </NavLink>
+
 
           
           <div className="nav-separator"></div>

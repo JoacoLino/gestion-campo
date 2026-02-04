@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 class AnimalBase(BaseModel):
     caravana: str
@@ -17,3 +17,7 @@ class AnimalResponse(AnimalBase):
 
     class Config:
         from_attributes = True
+
+class MovimientoMasivo(BaseModel):
+    animal_ids: List[int]
+    nuevo_lote_id: Optional[int] # Puede ser None si los sacas del lote (a "Campo General")

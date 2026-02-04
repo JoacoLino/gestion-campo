@@ -7,6 +7,7 @@ import Resumen from './pages/resumen'; // Asegúrate que coincida mayúscula/min
 import GestionLotes from './pages/gestion_lotes';
 import GestionAnimales from './pages/gestion_animales';
 import GestionSanidad from './pages/gestion_sanidad';
+import GestionAgenda from './pages/gestion_agenda';
 
 // --- BORRA LAS LÍNEAS QUE DECÍAN "const Resumen = ..." ---
 
@@ -31,6 +32,7 @@ function App() {
             <Route path="lotes" element={<GestionLotes />} />
             <Route path="animales" element={<GestionAnimales />} />
             <Route path="sanidad" element={<GestionSanidad />} />
+            <Route path="agenda" element={<GestionAgenda />} />
         </Route>
 
       </Routes>

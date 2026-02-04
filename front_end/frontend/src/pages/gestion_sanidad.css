@@ -83,3 +83,38 @@
     background-color: #fff8e1; /* Un colorcito suave para resaltar */
     font-weight: 500;
 }
+
+/* Contenedor para pegar los botones a la derecha juntos */
+.actions-group {
+    display: flex;
+    gap: 12px; /* Espacio entre el botón Excel y el de Crear */
+    align-items: center;
+}
+
+/* Estilo profesional para el botón Excel */
+.btn-excel {
+    background-color: #2e7d32; /* Verde Excel */
+    color: white;
+    border: 1px solid #1b5e20;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre icono y texto */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+    height: 40px; /* Altura fija para alinearse con los otros botones */
+}
+
+.btn-excel:hover {
+    background-color: #1b5e20;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+}
+
+.btn-excel:active {
+    transform: translateY(0);
+}

@@ -1,0 +1,78 @@
+.agenda-container {
+    padding: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dividimos: Calendario a la izq, Lista a la der */
+    gap: 30px;
+}
+
+@media (max-width: 768px) {
+    .agenda-container { grid-template-columns: 1fr; }
+}
+
+/* CALENDARIO PERSONALIZADO */
+.react-calendar {
+    width: 100%;
+    background: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    font-family: inherit;
+    padding: 10px;
+}
+
+.react-calendar__tile {
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 5px;
+}
+
+.react-calendar__tile--now { background: #e3f2fd; border-radius: 8px; }
+.react-calendar__tile--active { background: #1565c0 !important; color: white; border-radius: 8px; }
+
+/* Puntito indicador de evento */
+.event-indicator {
+    width: 6px;
+    height: 6px;
+    background-color: #ff9800;
+    border-radius: 50%;
+    margin-top: 2px;
+}
+
+/* LISTA DE EVENTOS */
+.agenda-sidebar {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    height: fit-content;
+}
+
+.event-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    gap: 10px;
+}
+
+.event-item.completed h4 { text-decoration: line-through; color: #999; }
+
+.event-check {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.event-details { flex: 1; }
+.event-details h4 { margin: 0; font-size: 1rem; color: #333; }
+.event-details p { margin: 2px 0 0; font-size: 0.85rem; color: #666; }
+
+.badge-tipo { padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; color: white; background: #999; }
+.tipo-Sanidad { background: #e53935; }
+.tipo-Manejo { background: #43a047; }
+.tipo-Venta { background: #fb8c00; }

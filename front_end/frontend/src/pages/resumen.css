@@ -59,3 +59,122 @@
     background-color: #2196f3;
     border-radius: 5px;
 }
+
+.alertas-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.alerta-banner {
+    padding: 12px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.alerta-danger {
+    background-color: #ffebee;
+    color: #c62828;
+    border-left: 5px solid #c62828;
+}
+
+.alerta-warning {
+    background-color: #fff8e1;
+    color: #f57f17;
+    border-left: 5px solid #f57f17;
+}
+
+.alerta-info {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border-left: 5px solid #1565c0;
+}
+
+.alerta-icon {
+    font-size: 1.2rem;
+}
+
+/* --- HEADER & CLIMA --- */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.subtitle { color: #666; margin-top: -10px; font-size: 0.9rem; }
+
+.weather-widget {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.weather-icon { font-size: 1.5rem; }
+.weather-info { display: flex; flex-direction: column; line-height: 1.1; }
+.weather-info .temp { font-weight: bold; font-size: 1.1rem; }
+.weather-info .city { font-size: 0.75rem; color: #888; }
+
+/* --- ALERTAS MEJORADAS --- */
+.alerta-banner {
+    justify-content: space-between; /* Flecha a la derecha */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.alerta-banner:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.alerta-content { display: flex; align-items: center; gap: 10px; }
+.alerta-arrow { font-weight: bold; color: rgba(0,0,0,0.3); }
+
+/* --- GRÁFICOS GRID --- */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.chart-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    min-height: 350px;
+}
+
+.chart-card h3 { margin-bottom: 20px; color: #444; font-size: 1.1rem; text-align: center; }
+
+.no-data { text-align: center; color: #999; margin-top: 50px; }
+
+/* Tips */
+.info-card { background: linear-gradient(135deg, #fff 0%, #f9f9f9 100%); }
+.tips-list { padding-left: 20px; color: #555; line-height: 1.8; }
+
+.btn-reporte {
+    background-color: #2e7d32; /* Verde Excel */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px; /* Redondito para que combine con el clima */
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-reporte:hover {
+    background-color: #1b5e20;
+    transform: translateY(-1px);
+}

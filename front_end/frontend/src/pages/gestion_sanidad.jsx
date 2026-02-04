@@ -94,17 +94,35 @@ const GestionSanidad = () => {
     return { day: partes[2], month: `/ ${partes[1]}` };
   };
 
+  // FUNCIÓN DE DESCARGA
+  const handleExportar = async () => {
+    try {
+      const response = await api.get(`/reportes/sanidad/${campo_id}`, { withCredentials: true, responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a'); link.href = url;
+      link.setAttribute('download', `Historial_Sanitario.csv`);
+      document.body.appendChild(link); link.click(); link.remove();
+    } catch (error) { console.error(error); alert("Error al exportar"); }
+  };
+
   if (loading) return <div>Cargando libreta sanitaria... 💉</div>;
 
   return (
     <div className="sanidad-container">
       <div className="header-actions">
-        <h2>💉 Registro Sanitario</h2>
-        <button className="btn-add-sanidad" onClick={() => setShowModal(true)}>
-          + Registrar Evento
-        </button>
+  <h2>💉 Registro Sanitario</h2>
+  
+      {/* NUEVO CONTENEDOR AGRUPADOR */}
+        <div className="actions-group">
+            <button className="btn-excel" onClick={handleExportar}>
+              📄 Excel
+            </button>
+            
+            <button className="btn-add-sanidad" onClick={() => setShowModal(true)}>
+              + Registrar Evento
+            </button>
+        </div>
       </div>
-
       <div className="timeline-sanidad">
         {eventos.map((ev) => {
           const { day, month } = formatDate(ev.fecha); // Usamos el helper seguro

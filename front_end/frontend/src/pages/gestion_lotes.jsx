@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // <--- 1. IMPORTAR ESTO
 import api from '../api/axios_config';
-import './gestion_lotes.css'; // Ahora crearemos este CSS
+import './gestion_lotes.css';
 
 const GestionLotes = () => {
   const { campo_id } = useParams();
+  const navigate = useNavigate(); // <--- 2. INICIALIZAR ESTO (Es el motor de navegación)
+  
   const [lotes, setLotes] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Estados para el Modal
   const [showModal, setShowModal] = useState(false);
   const [nuevoLote, setNuevoLote] = useState({ name: '', superficie: '', cultivo: '' });
 
-  // 1. Cargar Lotes al iniciar
   useEffect(() => {
     const fetchLotes = async () => {
       try {
@@ -27,30 +27,25 @@ const GestionLotes = () => {
     fetchLotes();
   }, [campo_id]);
 
-  // 2. Crear Lote
   const handleCrear = async (e) => {
     e.preventDefault();
     try {
-      // Convertimos superficie a float
       const payload = {
         ...nuevoLote,
         superficie: parseFloat(nuevoLote.superficie) || 0
       };
-
       const response = await api.post(`/lotes/${campo_id}/`, payload, { withCredentials: true });
-      
       setLotes([...lotes, response.data]);
       setShowModal(false);
       setNuevoLote({ name: '', superficie: '', cultivo: '' });
-      
     } catch (error) {
       console.error("Error creando lote:", error);
       alert("Error al crear el lote");
     }
   };
 
-  // 3. Eliminar Lote
-  const handleEliminar = async (id) => {
+  const handleEliminar = async (e, id) => {
+    e.stopPropagation(); // <--- 3. IMPORTANTE: Evita que al borrar también te lleve a la otra página
     if (!window.confirm("¿Seguro que querés borrar este lote?")) return;
     try {
       await api.delete(`/lotes/${id}`, { withCredentials: true });
@@ -60,24 +55,46 @@ const GestionLotes = () => {
     }
   };
 
+  const handleExportar = async () => {
+    try {
+      const response = await api.get(`/reportes/lotes/${campo_id}`, { withCredentials: true, responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a'); link.href = url;
+      link.setAttribute('download', `Reporte_Lotes.csv`);
+      document.body.appendChild(link); link.click(); link.remove();
+    } catch (error) { console.error(error); alert("Error al exportar"); }
+  };
+
   if (loading) return <div>Cargando mapa del campo...</div>;
 
   return (
     <div className="lotes-container">
       <div className="header-actions">
         <h2>🗺️ Lotes / Potreros</h2>
-        <button className="btn-primary" onClick={() => setShowModal(true)}>
-          + Nuevo Lote
-        </button>
+        <div className="actions-group">
+            <button className="btn-excel" onClick={handleExportar}>
+              📄 Excel
+            </button>
+            <button className="btn-primary" onClick={() => setShowModal(true)}>
+              + Nuevo Lote
+            </button>
+        </div>
       </div>
 
       <div className="lotes-grid">
         {lotes.map((lote) => (
-          <div key={lote.id} className="lote-card" onClick={() => alert(`//Aca proximamente agregar la ruta para que lo lleve a sus animales del respectivo lote//
-          Aquí podrías ir a ver los animales del lote: ${lote.name}`)} style={{ cursor: 'pointer' }}>
+          <div 
+             key={lote.id} 
+             className="lote-card" 
+             /* 4. AQUÍ ESTÁ LA ACCIÓN DE NAVEGAR */
+             onClick={() => navigate(`/dashboard/${campo_id}/animales?lote_id=${lote.id}`)}
+             style={{ cursor: 'pointer' }}
+             title="Ver animales en este lote"
+          >
             <div className="lote-header">
                 <h3>{lote.name}</h3>
-                <button className="btn-delete-mini" onClick={() => handleEliminar(lote.id)}>×</button>
+                {/* Pasamos el evento 'e' para detener la propagación */}
+                <button className="btn-delete-mini" onClick={(e) => handleEliminar(e, lote.id)}>×</button>
             </div>
             <div className="lote-body">
                 <div className="dato">
@@ -90,11 +107,9 @@ const GestionLotes = () => {
                 </div>
             </div>
             <div className="lote-footer">
-                {/* AHORA: Usamos el dato real */}
-                <span style={{ fontWeight: 'bold', color: lote.cantidad_animales > 0 ? '#2e7d32' : '#999' }}>
+                <span style={{ fontWeight: 'bold', color: lote.cantidad_animales > 0 ? '#1565c0' : '#999' }}>
                     🐄 {lote.cantidad_animales} Animales
                 </span>
-                
             </div>
           </div>
         ))}
@@ -104,24 +119,20 @@ const GestionLotes = () => {
         )}
       </div>
 
-      {/* --- MODAL --- */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h3>Nuevo Potrero 🌱</h3>
             <form onSubmit={handleCrear}>
-                <input 
-                    type="text" placeholder="Nombre (ej: La Loma)" required
+                <input type="text" placeholder="Nombre (ej: La Loma)" required
                     value={nuevoLote.name}
                     onChange={e => setNuevoLote({...nuevoLote, name: e.target.value})}
                 />
-                <input 
-                    type="number" placeholder="Superficie (Hectáreas)" required
+                <input type="number" placeholder="Superficie (Hectáreas)" required
                     value={nuevoLote.superficie}
                     onChange={e => setNuevoLote({...nuevoLote, superficie: e.target.value})}
                 />
-                <input 
-                    type="text" placeholder="Cultivo/Recurso (Opcional)"
+                <input type="text" placeholder="Cultivo/Recurso (Opcional)"
                     value={nuevoLote.cultivo}
                     onChange={e => setNuevoLote({...nuevoLote, cultivo: e.target.value})}
                 />

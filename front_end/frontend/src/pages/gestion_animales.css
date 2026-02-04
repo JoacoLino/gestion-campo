@@ -56,3 +56,175 @@
     align-items: center;
     gap: 8px;
 }
+
+
+/* Fila seleccionada */
+.row-selected {
+    background-color: #e3f2fd; /* Azul clarito */
+}
+
+/* Barra de herramientas flotante */
+.selection-toolbar {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    border: 1px solid #90caf9;
+}
+
+.btn-move {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.btn-move:hover { background-color: #1565c0; }
+
+.select-lote-move {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+
+/* Contenedor para pegar los botones a la derecha juntos */
+.actions-group {
+    display: flex;
+    gap: 12px; /* Espacio entre el botón Excel y el de Crear */
+    align-items: center;
+}
+
+/* Estilo profesional para el botón Excel */
+.btn-excel {
+    background-color: #2e7d32; /* Verde Excel */
+    color: white;
+    border: 1px solid #1b5e20;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre icono y texto */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+    height: 40px; /* Altura fija para alinearse con los otros botones */
+}
+
+.btn-excel:hover {
+    background-color: #1b5e20;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+}
+
+.btn-excel:active {
+    transform: translateY(0);
+}
+
+/* Badge de Filtro Activo */
+.filtro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #e8f5e9; /* Verde muy suave */
+    color: #2e7d32;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    border: 1px solid #c8e6c9;
+}
+
+.filtro-badge button {
+    background: none;
+    border: none;
+    color: #2e7d32;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 4px;
+}
+.filtro-badge button:hover {
+    color: #1b5e20;
+}
+
+/* --- BARRA DE FILTROS --- */
+.btn-filter {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    transition: all 0.2s;
+}
+
+.btn-filter:hover, .btn-filter.active {
+    background-color: #e0e0e0;
+    border-color: #999;
+}
+
+.filter-bar {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap; /* Para que baje en celulares */
+    align-items: center;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 600;
+}
+
+.filter-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    min-width: 150px;
+}
+
+.btn-clear-filters {
+    margin-top: 18px; /* Para alinear con los inputs */
+    background: none;
+    border: none;
+    color: #d32f2f;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.9rem;
+}
