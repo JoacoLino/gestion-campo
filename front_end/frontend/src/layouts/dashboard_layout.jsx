@@ -94,6 +94,13 @@ const DashboardLayout = () => {
             📅 Agenda
           </NavLink>
 
+          <NavLink 
+            to={`/dashboard/${campo_id}/insumos`}
+            className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
+          >
+            📦 Insumos
+          </NavLink>
+
 
           
           <div className="nav-separator"></div>

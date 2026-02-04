@@ -21,14 +21,14 @@ api.interceptors.response.use(
     originalRequest._retry = true;
     //Ver bien el tema esta para que no quede intentando hacer miles de refresh tokens y buggue la pagina
       try {
-        const res = await api.post('/auth/refresh-token', {}, { withCredentials: true });
+        const res = await api.post('/auth_routes/refresh-token', {}, { withCredentials: true });
         
         console.log("Refresh-token exitoso");
         // Podés guardar el nuevo access token si querés usarlo localmente:
-        const newAccessToken = res.data.access_token;
+        //const newAccessToken = res.data.access_token;
 
         // Opcional: setearlo en headers para futuros requests si no usás cookies
-        api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+        //api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
 
         return api(originalRequest); // Reintenta el request original

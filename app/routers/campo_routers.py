@@ -15,36 +15,29 @@ from app.models.users_models import User # Asegurate de importar User
 router = APIRouter()
 
 # --- 1. CREAR CAMPO (SEGURO) ---
-# Ya no pedimos user_id por parámetro, lo sacamos del token
+# POST: Crear Campo
 @router.post("/", response_model=CampoOut)
 def crear_nuevo_campo(
-    campo: CampoCreate,
-    db: Session = Depends(get_db),
-    current_user_email: str = Depends(obtener_usuario_actual) 
+    campo: CampoCreate, 
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(obtener_usuario_actual) # <--- User Object
 ):
-    # Buscamos al usuario real
-    user = db.query(User).filter(User.email == current_user_email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-
-    # Usamos su ID verdadero para crear el campo
-    return crear_campo(db, campo, user.id)
+    nuevo_campo = Campo(**campo.dict(), user_id=current_user.id) # <--- ID directo
+    db.add(nuevo_campo)
+    db.commit()
+    db.refresh(nuevo_campo)
+    return nuevo_campo
 
 
 # --- 2. OBTENER MIS CAMPOS (SEGURO) ---
-# Este es el que usa tu frontend ahora
+# GET: Mis Campos
 @router.get("/mis_campos", response_model=List[CampoOut])
 def obtener_mis_campos(
-    db: Session = Depends(get_db),
-    current_user_email: str = Depends(obtener_usuario_actual)
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(obtener_usuario_actual) # <--- User Object
 ):
-    # Buscamos al usuario real
-    user = db.query(User).filter(User.email == current_user_email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-
-    # Usamos su ID verdadero para filtrar
-    campos = db.query(Campo).filter(Campo.user_id == user.id).all()
+    # Usamos current_user.id directamente
+    campos = db.query(Campo).filter(Campo.user_id == current_user.id).all()
     return campos
 
 # NOTA: He borrado el antiguo 'obtener_campos' que recibía user_id porque era inseguro.
@@ -68,24 +61,19 @@ def borrar_campo(
     
     return {"mensaje": "Campo eliminado correctamente"}
 
+# GET: Detalle Campo
 @router.get("/{campo_id}", response_model=CampoOut)
 def obtener_detalle_campo(
-    campo_id: int,
+    campo_id: int, 
     db: Session = Depends(get_db),
-    current_user_email: str = Depends(obtener_usuario_actual)
+    current_user: User = Depends(obtener_usuario_actual) # <--- User Object
 ):
-    # 1. Buscamos al usuario
-    user = db.query(User).filter(User.email == current_user_email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-
-    # 2. EL CANDADO DE SEGURIDAD 🔒
-    # Buscamos el campo que tenga ese ID *Y* que pertenezca a este usuario
-    campo = db.query(Campo).filter(Campo.id == campo_id, Campo.user_id == user.id).first()
-
-    # 3. Si no existe (o no es suyo), devolvemos error
-    if not campo:
-        # Usamos 404 para no dar pistas de que el campo existe pero es privado
-        raise HTTPException(status_code=404, detail="Campo no encontrado o acceso denegado")
+    # Usamos current_user.id directamente
+    campo = db.query(Campo).filter(
+        Campo.id == campo_id, 
+        Campo.user_id == current_user.id
+    ).first()
     
+    if not campo:
+        raise HTTPException(status_code=404, detail="Campo no encontrado")
     return campo

@@ -5,21 +5,21 @@ from typing import List
 from app.database import get_db
 from app.models.users_models import User
 from app.models.campo_models import Campo
-from app.models.animal_models import Animal
 from app.models.sanidad_models import EventoSanitario
 from app.schemas.sanidad_schemas import SanidadCreate, SanidadOut
 from app.auth.auth_dependencies import obtener_usuario_actual
 
 router = APIRouter()
 
-# --- VALIDACIÓN DE SEGURIDAD ---
-def validar_acceso(campo_id: int, user_email: str, db: Session):
-    user = db.query(User).filter(User.email == user_email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+# --- VALIDACIÓN DE SEGURIDAD CORREGIDA ---
+# Ahora recibe 'user: User' directamente, NO un string 'user_email'
+def validar_acceso(campo_id: int, user: User, db: Session):
+    # Ya no necesitamos buscar el usuario por email, porque 'user' YA ES el usuario
+    
+    # Solo verificamos que el campo sea de este usuario usando su ID
     campo = db.query(Campo).filter(Campo.id == campo_id, Campo.user_id == user.id).first()
     if not campo:
-        raise HTTPException(status_code=403, detail="Permiso denegado")
+        raise HTTPException(status_code=403, detail="Permiso denegado sobre este campo")
     return campo
 
 # 1. REGISTRAR UN EVENTO SANITARIO
@@ -28,9 +28,9 @@ def crear_evento(
     campo_id: int,
     evento: SanidadCreate,
     db: Session = Depends(get_db),
-    current_user_email: str = Depends(obtener_usuario_actual)
+    current_user: User = Depends(obtener_usuario_actual) # Recibe el objeto User
 ):
-    validar_acceso(campo_id, current_user_email, db)
+    validar_acceso(campo_id, current_user, db)
 
     nuevo_evento = EventoSanitario(
         fecha=evento.fecha,
@@ -52,19 +52,20 @@ def crear_evento(
 def listar_eventos(
     campo_id: int,
     db: Session = Depends(get_db),
-    current_user_email: str = Depends(obtener_usuario_actual)
+    current_user: User = Depends(obtener_usuario_actual) # Recibe el objeto User
 ):
-    validar_acceso(campo_id, current_user_email, db)
+    validar_acceso(campo_id, current_user, db)
     
     eventos = db.query(EventoSanitario)\
                 .filter(EventoSanitario.campo_id == campo_id)\
                 .order_by(EventoSanitario.fecha.desc())\
                 .all()
     
-    # Pequeño truco para inyectar el nombre del animal en la respuesta si existe
+    # Inyectar nombre del animal si existe
     resultado = []
     for ev in eventos:
-        ev_out = SanidadOut.from_orm(ev)
+        # Usamos from_attributes=True en el schema (Pydantic V2)
+        ev_out = SanidadOut.from_orm(ev) 
         if ev.animal:
             ev_out.nombre_animal = f"{ev.animal.caravana} ({ev.animal.categoria})"
         resultado.append(ev_out)
@@ -76,13 +77,13 @@ def listar_eventos(
 def eliminar_evento(
     evento_id: int,
     db: Session = Depends(get_db),
-    current_user_email: str = Depends(obtener_usuario_actual)
+    current_user: User = Depends(obtener_usuario_actual) # Recibe el objeto User
 ):
     evento = db.query(EventoSanitario).filter(EventoSanitario.id == evento_id).first()
     if not evento:
         raise HTTPException(status_code=404, detail="Evento no encontrado")
         
-    validar_acceso(evento.campo_id, current_user_email, db) # Verificamos dueño del campo
+    validar_acceso(evento.campo_id, current_user, db) # Verificamos dueño
     
     db.delete(evento)
     db.commit()

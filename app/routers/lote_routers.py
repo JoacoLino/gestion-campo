@@ -8,16 +8,14 @@ from app.schemas.lote_schemas import LoteCreate, LoteOut
 from app.crud.lote_crud import crear_lote, obtener_lotes_por_campo, eliminar_lote
 from app.models.campo_models import Campo
 from app.models.lote_models import Lote
-from app.models.users_models import User
+from app.models.users_models import User # <--- Asegúrate de tener este import
 from app.auth.auth_dependencies import obtener_usuario_actual
 
 router = APIRouter()
 
-# --- VALIDACIÓN DE SEGURIDAD ---
-def validar_dueno_campo(campo_id: int, user_email: str, db: Session):
-    user = db.query(User).filter(User.email == user_email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+# --- VALIDACIÓN DE SEGURIDAD ACTUALIZADA ---
+def validar_dueno_campo(campo_id: int, user: User, db: Session):
+    # Ya no buscamos el usuario, usamos user.id directo
     
     # Buscamos si el campo existe Y es del usuario
     campo = db.query(Campo).filter(Campo.id == campo_id, Campo.user_id == user.id).first()
@@ -31,28 +29,25 @@ def create_new_lote(
     campo_id: int,
     lote: LoteCreate,
     db: Session = Depends(get_db),
-    current_user_email: str = Depends(obtener_usuario_actual)
+    current_user: User = Depends(obtener_usuario_actual) # <--- Recibimos User
 ):
     # Verificamos que el campo sea tuyo antes de crear nada
-    validar_dueno_campo(campo_id, current_user_email, db)
+    validar_dueno_campo(campo_id, current_user, db)
     return crear_lote(db, lote, campo_id)
 
 # 2. LISTAR LOTES DE UN CAMPO
-# En app/routers/lote_routers.py
-
 @router.get("/{campo_id}/", response_model=List[LoteOut])
 def read_lotes(
     campo_id: int,
     db: Session = Depends(get_db),
-    current_user_email: str = Depends(obtener_usuario_actual)
+    current_user: User = Depends(obtener_usuario_actual) # <--- Recibimos User
 ):
-    validar_dueno_campo(campo_id, current_user_email, db)
+    validar_dueno_campo(campo_id, current_user, db)
     
     # 1. Obtenemos los lotes de la base de datos
     lotes_db = obtener_lotes_por_campo(db, campo_id)
     
-    # 2. Calculamos la cantidad de animales para cada uno
-    # SQLAlchemy hace la magia: lote.animales trae la lista gracias a la relationship
+    # 2. Calculamos la cantidad de animales
     for lote in lotes_db:
         lote.cantidad_animales = len(lote.animales) 
     
@@ -63,15 +58,15 @@ def read_lotes(
 def delete_lote(
     lote_id: int,
     db: Session = Depends(get_db),
-    current_user_email: str = Depends(obtener_usuario_actual)
+    current_user: User = Depends(obtener_usuario_actual) # <--- Recibimos User
 ):
-    # Primero averiguamos de quién es el lote para ver si tienes permiso
+    # Primero averiguamos de quién es el lote
     lote = db.query(Lote).filter(Lote.id == lote_id).first()
     if not lote:
         raise HTTPException(status_code=404, detail="Lote no encontrado")
     
-    # Validamos que el dueño del campo (al que pertenece el lote) seas tú
-    validar_dueno_campo(lote.campo_id, current_user_email, db)
+    # Validamos permiso sobre el campo dueño del lote
+    validar_dueno_campo(lote.campo_id, current_user, db)
     
     eliminar_lote(db, lote_id)
     return {"mensaje": "Lote eliminado correctamente"}

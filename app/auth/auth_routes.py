@@ -1,139 +1,166 @@
-"""
-Configuración de la autenticacion JWT.
-
-Este archivo contiene todos los routers de la autenticacion:
-"""
-
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, Request
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from app.database import get_db
 from app.models.users_models import User
 from app.models.refresh_token_models import RefreshToken
-#Aca me parece que deberia de usar Token y Refresh Token. Esto podria ser una solucion a que no me anda el Refresh Token
-from app.schemas.token_schemas import Token
-#from app.schemas.refresh_token_schemas import RefreshTokenOut
 from app.schemas.user_schemas import UsuarioCreate
 from app.auth.auth_utils import (
     hashear_password, verificar_password, crear_token_acceso, crear_refresh_token
 )
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone # <--- Importante: timezone
 from fastapi.responses import JSONResponse
 
-from fastapi import Response # Asegurate de importar Response
-
 router = APIRouter()
-""""
-#Funcion que agarra lo que el usuario pone para registrarse y crea el ususario en la base de datos
-@router.post("/registro", response_model=Token)
-def registrar_usuario(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == form_data.username).first() #Busca que el usuario no exista actualmente en la base de datos
-    if user:
-        raise HTTPException(status_code=400, detail="Email ya registrado") #Si encuentra un usuario debuelve un error
 
-    #Crea una variable para guardar la informacion que el usuario escribio
-    nuevo_user = User(
-        name=form_data.username,
-        email=form_data.username,
-        password=hashear_password(form_data.password) #Hashea la password para mayor seguridad
-    )
-    db.add(nuevo_user) #Agrega el nuevo user en la base de datos
-    db.commit() #Actualiza la base de datos
-    db.refresh(nuevo_user)
-
-    token = crear_token_acceso({"sub": nuevo_user.email}) #Crea el token mediante el email del usuario
-    return {"access_token": token, "token_type": "bearer"} #Devuelve el token que certifica el registro por 1 minuto
-"""
-#Funcion que agarra lo que el usuario pone para registrarse y crea el ususario en la base de datos
-#@router.post("/registro", response_model=Token)
+# REGISTRO
 @router.post("/registro")
 def registrar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
-    print(usuario)
-    user = db.query(User).filter(User.email == usuario.email).first() #Busca que el usuario no exista actualmente en la base de datos
+    user = db.query(User).filter(User.email == usuario.email).first()
     if user:
-        raise HTTPException(status_code=400, detail="Email ya registrado") #Si encuentra un usuario debuelve un error
+        raise HTTPException(status_code=400, detail="Email ya registrado")
 
-    #Crea una variable para guardar la informacion que el usuario escribio
     nuevo_user = User(
         name=usuario.name,
         email=usuario.email,
-        password=hashear_password(usuario.password) #Hashea la password para mayor seguridad
+        password=hashear_password(usuario.password)
     )
-    db.add(nuevo_user) #Agrega el nuevo user en la base de datos
-    db.commit() #Actualiza la base de datos
+    db.add(nuevo_user)
+    db.commit()
     db.refresh(nuevo_user)
+    return {"mensaje": "Usuario creado exitosamente"}
 
-
-    return
-    #refresh_token = crear_refresh_token({"sub": nuevo_user.email})
-    #token = crear_token_acceso({"sub": nuevo_user.email}) #Crea el token mediante el email del usuario
-    #return {"access_token": token, "refresh_token": refresh_token,  "token_type": "bearer"} #Devuelve el token que certifica el registro por 1 minuto
-    #Necesito pasarle el refresh token porque asi lo puse en el schema de token, aunque no haga falta
-
-
-#Funcion que agarra lo que el usuario pone para iniciar sesion
+# LOGIN
 @router.post("/login")
 def login(response: Response, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == form_data.username).first() #Busca el usuario en la base de datos
-    if not user or not verificar_password(form_data.password, user.password): #Si no se encuentra el usuario o la contraseña esta mal devuelve un error
-        raise HTTPException(status_code=401, detail="Credenciales inválidas") 
+    user = db.query(User).filter(User.email == form_data.username).first()
+    if not user or not verificar_password(form_data.password, user.password):
+        raise HTTPException(status_code=401, detail="Credenciales inválidas")
 
-    # Después de verificar el usuario:
+    # 1. Crear Refresh Token con expiración en UTC
     refresh_token = crear_refresh_token({"sub": str(user.id)})
-    #xpira_en = datetime.now() + timedelta(days=7)
-    expira_en = datetime.now() + timedelta(seconds= 60 *10)
+    
+    # CORRECCIÓN 1: Usar timezone.utc para evitar conflicto horario Argentina vs Mundo
+    expira_en = datetime.now(timezone.utc) + timedelta(days=7)
 
+    # 2. Guardar en Base de Datos
     db_refresh = RefreshToken(
         token=refresh_token,
         user_id=user.id,
-        expires_at=expira_en
+        expires_at=expira_en,
+        is_active=True # Nos aseguramos que nazca activo
     )
     db.add(db_refresh)
     db.commit()
     db.refresh(db_refresh)
 
+    # 3. Crear Access Token
+    access_token = crear_token_acceso({"sub": str(user.email)}) # O user.id si prefieres
 
-    token = crear_token_acceso({"sub": str(user.email)}) #Crea el token de autenticacion mediante el email //CAMBIAR PARA QUE LO CREE CON EL USER ID Y NO CON EL MAIL
-    print("LOGIN OK", token, refresh_token)
-    print("Password correcta:", verificar_password(form_data.password, user.password))
+    # 4. Devolver respuesta con Cookies
+    response = JSONResponse(
+        content={
+            "access_token": access_token,
+            "token_type": "bearer"
+        }
+    )
 
-    
-    # Guardar el access token como cookie HTTP-only
+    # CORRECCIÓN 2: secure=False para que funcione en localhost
     response.set_cookie(
         key="access_token",
-        value=token,
+        value=access_token,
         httponly=True,
-        secure=True,        # ⚠️ Asegurate de usar HTTPS en producción
-        samesite="Lax",     # o "Strict" si querés evitar CSRF
-        max_age= 60*10,    # 15 minutos, o lo que definas como duración // Duracion del acces token en segundos
-        path="/"
+        secure=False, # <--- False en desarrollo
+        samesite="lax",
+        max_age=60 * 15 # 15 minutos
     )
 
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=True,        # ⚠️ Asegurate de usar HTTPS en producción
-        samesite="Lax",     # o "Strict" si querés evitar CSRF
-        max_age= 60 * 10,    # 15 minutos, o lo que definas como duración
-        path="/"
+        secure=False, # <--- False en desarrollo
+        samesite="lax",
+        max_age=60 * 60 * 24 * 7 # 7 días
     )
 
-    #return response
-    #return {"access_token": token, "refresh_token": refresh_token,  "token_type": "bearer"}
-    return JSONResponse(
-        content={
-            "access_token": token,
-            "refresh_token": refresh_token,
-            "token_type": "bearer"
-        },
-        headers=response.headers
+    return response
+
+# REFRESH TOKEN
+@router.post("/refresh-token")
+def refresh_token(request: Request, db: Session = Depends(get_db)):
+    # 1. Leer cookie
+    refresh_token_cookie = request.cookies.get("refresh_token")
+    if not refresh_token_cookie:
+        raise HTTPException(status_code=401, detail="Refresh token no encontrado en cookies")
+
+    # 2. Buscar en BD
+    token_db = db.query(RefreshToken).filter(RefreshToken.token == refresh_token_cookie).first()
+    
+    # 3. Validar
+    if not token_db:
+        raise HTTPException(status_code=401, detail="Refresh token no existe en BD")
+    
+    if not token_db.is_active:
+        raise HTTPException(status_code=401, detail="Refresh token revocado")
+        
+    # Comparación UTC vs UTC (Ahora sí funciona)
+    if token_db.expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=401, detail="Refresh token expirado")
+
+    # 4. Obtener usuario
+    user = db.query(User).filter(User.id == token_db.user_id).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Usuario no encontrado")
+
+    # 5. Rotación de tokens (Opcional: Revocar el viejo y dar uno nuevo)
+    # Para simplificar y evitar errores de concurrencia ahora, podemos mantener el refresh y solo dar nuevo access
+    # O revocar y dar nuevo (Lógica de rotación):
+    token_db.is_active = False # Revocamos el usado
+    
+    nuevo_refresh_token = crear_refresh_token({"sub": str(user.id)})
+    nuevo_expira = datetime.now(timezone.utc) + timedelta(days=7)
+    
+    nuevo_db_refresh = RefreshToken(
+        token=nuevo_refresh_token,
+        user_id=user.id,
+        expires_at=nuevo_expira,
+        is_active=True
     )
+    db.add(nuevo_db_refresh)
+    
+    # 6. Nuevo Access Token
+    nuevo_access_token = crear_token_acceso({"sub": str(user.email)})
+    
+    db.commit()
 
+    # 7. Respuesta
+    response = JSONResponse(content={"access_token": nuevo_access_token, "token_type": "bearer"})
+    
+    # Seteamos cookies nuevamente
+    response.set_cookie(
+        key="access_token",
+        value=nuevo_access_token,
+        httponly=True,
+        secure=False, # <--- False en local
+        samesite="lax",
+        max_age=60 * 15
+    )
+    
+    response.set_cookie(
+        key="refresh_token",
+        value=nuevo_refresh_token,
+        httponly=True,
+        secure=False, # <--- False en local
+        samesite="lax",
+        max_age=60 * 60 * 24 * 7
+    )
+    
+    return response
 
+# LOGOUT
 @router.post("/logout")
 def logout(response: Response):
-    # Esto le dice al navegador: "Borra estas cookies YA"
     response.delete_cookie(key="access_token")
-    response.delete_cookie(key="refresh_token") # Si usas refresh token también
-    return {"mensaje": "Sesión cerrada exitosamente"}
+    response.delete_cookie(key="refresh_token")
+    return {"mensaje": "Sesión cerrada"}

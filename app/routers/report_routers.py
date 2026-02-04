@@ -15,18 +15,17 @@ from app.models.users_models import User
 
 router = APIRouter()
 
-# --- SEGURIDAD ---
-def validar_dueno(campo_id: int, user_email: str, db: Session):
-    user = db.query(User).filter(User.email == user_email).first()
-    if not user: raise HTTPException(status_code=404, detail="Usuario no encontrado")
+# --- SEGURIDAD ACTUALIZADA ---
+def validar_dueno(campo_id: int, user: User, db: Session):
+    # Usamos user.id directamente
     campo = db.query(Campo).filter(Campo.id == campo_id, Campo.user_id == user.id).first()
     if not campo: raise HTTPException(status_code=403, detail="Sin permiso")
     return campo
 
 # --- 1. REPORTE DE STOCK (ANIMALES) ---
 @router.get("/stock/{campo_id}")
-def exportar_stock(campo_id: int, db: Session = Depends(get_db), current_user_email: str = Depends(obtener_usuario_actual)):
-    campo = validar_dueno(campo_id, current_user_email, db)
+def exportar_stock(campo_id: int, db: Session = Depends(get_db), current_user: User = Depends(obtener_usuario_actual)):
+    campo = validar_dueno(campo_id, current_user, db)
     animales = db.query(Animal).filter(Animal.campo_id == campo_id).all()
     
     output = io.StringIO()
@@ -48,8 +47,8 @@ def exportar_stock(campo_id: int, db: Session = Depends(get_db), current_user_em
 
 # --- 2. REPORTE DE LOTES (TIERRA) ---
 @router.get("/lotes/{campo_id}")
-def exportar_lotes(campo_id: int, db: Session = Depends(get_db), current_user_email: str = Depends(obtener_usuario_actual)):
-    campo = validar_dueno(campo_id, current_user_email, db)
+def exportar_lotes(campo_id: int, db: Session = Depends(get_db), current_user: User = Depends(obtener_usuario_actual)):
+    campo = validar_dueno(campo_id, current_user, db)
     lotes = db.query(Lote).filter(Lote.campo_id == campo_id).all()
     
     output = io.StringIO()
@@ -70,8 +69,8 @@ def exportar_lotes(campo_id: int, db: Session = Depends(get_db), current_user_em
 
 # --- 3. REPORTE SANITARIO (HISTORIAL) ---
 @router.get("/sanidad/{campo_id}")
-def exportar_sanidad(campo_id: int, db: Session = Depends(get_db), current_user_email: str = Depends(obtener_usuario_actual)):
-    campo = validar_dueno(campo_id, current_user_email, db)
+def exportar_sanidad(campo_id: int, db: Session = Depends(get_db), current_user: User = Depends(obtener_usuario_actual)):
+    campo = validar_dueno(campo_id, current_user, db)
     eventos = db.query(EventoSanitario).filter(EventoSanitario.campo_id == campo_id).all()
     
     output = io.StringIO()

@@ -8,6 +8,7 @@ import GestionLotes from './pages/gestion_lotes';
 import GestionAnimales from './pages/gestion_animales';
 import GestionSanidad from './pages/gestion_sanidad';
 import GestionAgenda from './pages/gestion_agenda';
+import GestionInsumos from './pages/gestion_insumos';
 
 // --- BORRA LAS LÍNEAS QUE DECÍAN "const Resumen = ..." ---
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="animales" element={<GestionAnimales />} />
             <Route path="sanidad" element={<GestionSanidad />} />
             <Route path="agenda" element={<GestionAgenda />} />
+            <Route path="insumos" element={<GestionInsumos />} />
         </Route>
 
       </Routes>

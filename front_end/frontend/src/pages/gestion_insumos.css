@@ -1,0 +1,123 @@
+.lotes-container {
+    padding: 10px;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+/* --- CAMBIO: VOLVEMOS AL AZUL --- */
+.btn-primary {
+    background-color: #1976d2; /* Azul (igual a Animales) */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.btn-primary:hover {
+    background-color: #1565c0;
+}
+
+.lotes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.lote-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+    /* --- CAMBIO: BORDE AZUL --- */
+    border-left: 5px solid #1976d2; 
+}
+
+.lote-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.lote-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.lote-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.btn-delete-mini {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.btn-delete-mini:hover { color: red; }
+
+.lote-body .dato {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.lote-body .label { color: #666; }
+.lote-body .valor { font-weight: 600; color: #333; }
+
+/* --- CAMBIO: FOOTER AZULITO --- */
+.lote-footer {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed #e0e0e0;
+    font-size: 0.85rem;
+    color: #0d47a1; /* Texto azul oscuro */
+    text-align: center;
+    background-color: #e3f2fd; /* Fondo azul clarito */
+    border-radius: 4px;
+}
+
+/* Contenedor para botones */
+.actions-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* El botón Excel lo dejamos Verde para que se distinga */
+.btn-excel {
+    background-color: #2e7d32;
+    color: white;
+    border: 1px solid #1b5e20;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+    height: 40px;
+}
+
+.btn-excel:hover {
+    background-color: #1b5e20;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+}

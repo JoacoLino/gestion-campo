@@ -8,6 +8,8 @@ from app.models.sanidad_models import EventoSanitario
 # Importamos el NUEVO modelo
 from app.models.agenda_models import AgendaEvento 
 
+from app.models.insumo_models import Insumo
+
 print("Detectando nuevas tablas...")
 # create_all es inteligente: Solo crea las tablas que NO existen.
 # No borra ni modifica las que ya están.
