@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import api from '../api/axios_config';
-
+// import axios from 'axios'; <--- BORRA ESTO, NO LO USAMOS DIRECTO
+import api from '../api/axios_config'; // Usamos tu instancia configurada
 import './register.css';
 
 function Register() {
@@ -12,23 +11,27 @@ function Register() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const API_URL = 'http://localhost:8000/auth_routes/'; // Cambiar por tu URL real
+  // ❌ BORRA ESTA LÍNEA QUE CAUSA EL ERROR:
+  // const API_URL = 'http://localhost:8000/auth_routes/'; 
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await api.post(`${API_URL}registro`, {
+      // ✅ CORRECTO: Solo la ruta relativa. 
+      // La 'api' ya sabe que tiene que ir a https://gestion-campo...onrender.com
+      await api.post('/auth_routes/registro', {
         name,
         email,
         password
       });
       navigate('/');
+      
   } catch (err) {
-    console.error("EL ERROR REAL ES:", err.response); // Esto imprimirá el detalle en la consola (F12)
+    console.error("EL ERROR REAL ES:", err.response);
     if (err.response && err.response.data && err.response.data.detail) {
-        setError(err.response.data.detail); // Muestra el mensaje que manda el Python
+        setError(err.response.data.detail);
     } else {
-        setError('Error de conexión o configuración (Mira la consola F12)');
+        setError('Error de conexión. Intenta de nuevo.');
     }
   }
   };
@@ -39,20 +42,18 @@ function Register() {
             <h2>Registrarse</h2>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleRegister}>
+                {/* ... TUS INPUTS SIGUEN IGUAL ... */}
                 <div>
                 <label>Nombre:</label>
-                <input type="text" value={name}
-                    onChange={(e) => setName(e.target.value)} required />
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
                 </div>
                 <div>
                 <label>Email:</label>
-                <input type="email" value={email}
-                    onChange={(e) => setEmail(e.target.value)} required />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
                 <div>
                 <label>Contraseña:</label>
-                <input type="password" value={password}
-                    onChange={(e) => setPassword(e.target.value)} required />
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 </div>
                 <button type="submit">Crear cuenta</button>
                 <div className='register-link'>
