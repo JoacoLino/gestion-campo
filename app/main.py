@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.database import engine, Base  # <--- IMPORTANTE: Importar engine y Base
+from app.models import users_models, campo_models, animal_models, lote_models, sanidad_models, insumo_models # <--- IMPORTANTE: Importar TODOS tus modelos para que SQLAlchemy los vea
+
 # Importar routers
 from app.routers import (
     auth_routers,
@@ -18,17 +21,10 @@ from app.routers import (
 )
 from app.auth import auth_routes
 
-from app.models import (
-    users_models,
-    campo_models,
-    lote_models,
-    animal_models,
-    actividad_models,
-    insumo_models,
-    refresh_token_models
-)
-
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
+
 
 # Permitir orígenes
 origins = [
