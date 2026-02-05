@@ -28,15 +28,15 @@ Base.metadata.create_all(bind=engine)
 
 # Permitir orígenes
 origins = [
-    "http://localhost:5173", # Tu local
-    "https://gestioncampo.vercel.app", # <--- (EJEMPLO) Tu futuro dominio de Vercel
-    # Puedes agregar "*" temporalmente para probar, pero mejor ser específico
+    "http://localhost:5173",              # Tu entorno local
+    "https://gestioncampo.vercel.app",    # <--- TU URL DE VERCEL (Sin barra al final)
+    "https://gestioncampo.vercel.app/",   # A veces ayuda ponerla con barra también por si acaso
 ]
 
 # Configuración de CORS para permitir conexión con el frontend (por ejemplo en http://localhost:5173)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Reemplazá con la URL de tu frontend si cambia
+    allow_origins=origins,  # Reemplazá con la URL de tu frontend si cambia
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
