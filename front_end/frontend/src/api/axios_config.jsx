@@ -3,7 +3,8 @@ import axios from 'axios';
 // Lógica inteligente:
 // Si existe una variable de entorno (en Vercel), usa esa.
 // Si no, usa localhost (para cuando programas en tu casa).
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+//const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const baseURL = "https://gestion-campo-5scg.onrender.com";
 
 const instance = axios.create({
   baseURL: baseURL, 
