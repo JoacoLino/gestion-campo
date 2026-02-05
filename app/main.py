@@ -33,7 +33,7 @@ app = FastAPI()
 # Permitir orígenes
 origins = [
     "http://localhost:5173", # Tu local
-    "https://mi-campo-app.vercel.app", # <--- (EJEMPLO) Tu futuro dominio de Vercel
+    "https://gestioncampo.vercel.app", # <--- (EJEMPLO) Tu futuro dominio de Vercel
     # Puedes agregar "*" temporalmente para probar, pero mejor ser específico
 ]
 
