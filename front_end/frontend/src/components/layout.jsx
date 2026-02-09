@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './Layout.css'; // Crearemos este CSS enseguida
+import './layout.css'; // Crearemos este CSS enseguida
 
 const Layout = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false); // Estado para abrir/cerrar menú
