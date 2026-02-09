@@ -23,8 +23,10 @@
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
-  width: 20vw;
-  height: 20w;
+/* --- CAMBIO CLAVE AQUÍ --- */
+  width: 90%;           /* En celulares ocupa casi todo el ancho */
+  max-width: 400px;     /* En PC nunca pasa de 400px (queda elegante) */
+  min-height: 300px; /* Altura mínima para que no se vea aplastado */
 }
 
 .register-box h2 {
