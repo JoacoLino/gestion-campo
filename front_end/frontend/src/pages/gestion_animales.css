@@ -1,126 +1,142 @@
+/* CONTAINER GENERAL */
+.animales-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* HEADER */
+.dashboard-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 2rem; min-height: 50px;
+}
+.dashboard-header h2 { margin: 0; color: #111; font-size: 1.5rem; }
+.subtitle { margin: 5px 0 0 0; color: #666; font-size: 0.9rem; }
+.header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* BARRA SELECCIÓN */
+.selection-toolbar-header {
+    background-color: #e3f2fd; color: #0d47a1; width: 100%; padding: 10px 15px; border-radius: 8px;
+    display: flex; justify-content: space-between; align-items: center; border: 1px solid #90caf9;
+}
+.btn-move { background-color: #1565c0; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+/* BOTONES */
+.btn-add-animal { background-color: #1976d2; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+.btn-excel { background-color: #2e7d32; color: white; border: 1px solid #1b5e20; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+.btn-filter { background-color: #f5f5f5; color: #333; border: 1px solid #ccc; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+.btn-filter.active { background-color: #e0e0e0; border-color: #999; }
+
+/* FILTROS */
+.filter-bar {
+    background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;
+    border: 1px solid #e0e0e0; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;
+}
+.filter-group { display: flex; flex-direction: column; gap: 5px; }
+.filter-input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; min-width: 140px; }
+.btn-clear-filters { background: none; border: none; color: #d32f2f; cursor: pointer; text-decoration: underline; }
+
+/* --- TABLA (Estilo PC) --- */
+.table-responsive { width: 100%; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; }
+.tabla-animales { width: 100%; border-collapse: collapse; background: white; }
+
+.tabla-animales th, .tabla-animales td { padding: 18px; text-align: left; border-bottom: 1px solid #eee; }
+.tabla-animales th { background-color: #f1f3f5; color: #495057; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+.tabla-animales tr:hover { background-color: #f8f9fa; }
+.row-selected { background-color: #e3f2fd !important; }
+
+/* BADGES */
+.badge { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.3px; }
+.badge-vaca { background: #e3f2fd; color: #1976d2; }
+.badge-toro { background: #e8eaf6; color: #283593; }
+.badge-ternero { background: #fff3e0; color: #e65100; }
+.badge-default { background: #f5f5f5; color: #666; }
+
+.btn-delete-mini { background: none; border: none; cursor: pointer; font-size: 1.2rem; opacity: 0.3; transition: 0.2s; }
+.btn-delete-mini:hover { opacity: 1; color: #d32f2f; transform: scale(1.1); }
+
+
 /* =======================================================
-   VERSION MÓVIL (< 768px): LISTA LIMPIA (Estilo App)
+   TRANSFORMACIÓN A TARJETAS (MÓVIL < 768px)
    ======================================================= */
 @media (max-width: 768px) {
-    .animales-container { 
-        padding: 0; /* Aprovechar todo el ancho */
-        background-color: white; /* Fondo blanco para parecer app nativa */
-    }
+    .animales-container { padding: 1rem; }
     
-    /* Header compacto */
-    .dashboard-header { 
-        padding: 15px; 
-        border-bottom: 1px solid #f0f0f0;
-        margin-bottom: 0;
-        background: #f8f9fa;
-    }
+    .dashboard-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .header-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .btn-add-animal, .btn-excel, .btn-filter { padding: 10px 5px; font-size: 0.8rem; justify-content: center; width: 100%; }
+    .filter-bar { flex-direction: column; align-items: stretch; }
+    .filter-input { width: 100%; box-sizing: border-box; }
 
-    /* Acciones en dos filas */
-    .header-actions { 
-        width: 100%; 
-        display: grid; 
-        grid-template-columns: 1fr 1fr; 
-        gap: 10px; 
-        margin-top: 10px;
-    }
-    .btn-add-animal { grid-column: span 2; } /* Botón Alta ocupa todo el ancho */
-
-    /* Ocultamos los títulos de la tabla */
+    /* --- MAGIA: TABLA SE VUELVE TARJETAS --- */
+    
+    /* 1. Ocultar encabezados de tabla */
     .tabla-animales thead { display: none; }
-
-    /* Contenedor de la lista */
-    .table-responsive {
-        border-radius: 0; 
-        box-shadow: none;
+    
+    /* 2. Convertir tabla en bloque */
+    .tabla-animales, .tabla-animales tbody, .tabla-animales tr, .tabla-animales td {
+        display: block; width: 100%; box-sizing: border-box;
     }
 
-    .tabla-animales {
-        display: block;
-    }
-
-    .tabla-animales tbody {
-        display: block;
-    }
-
-    /* --- FILA DE ANIMAL (Estilo Lista) --- */
+    /* 3. Estilo de cada "Tarjeta" (Fila) */
     .tabla-animales tr {
-        display: grid;
-        /* 3 Columnas: Checkbox | Info Principal | Botón Borrar */
-        grid-template-columns: 40px 1fr 50px; 
-        align-items: center;
-        border-bottom: 1px solid #f0f0f0;
-        padding: 12px 10px;
+        margin-bottom: 15px;
         background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        padding: 15px;
+        position: relative; /* Para posicionar el checkbox/delete */
     }
 
-    /* Celda Checkbox */
-    .tabla-animales td:first-child { 
-        padding: 0; border: none; text-align: center;
-    }
-    .tabla-animales td:first-child input { 
-        width: 20px; height: 20px; margin: 0; 
-    }
-
-    /* Celda Info (Agrupamos las columnas de datos aquí) */
-    /* Para que esto funcione bien, vamos a ocultar las celdas individuales 
-       y mostrar solo lo importante o reordenarlo visualmente es complejo solo con CSS.
-       
-       MEJOR ESTRATEGIA: Usar Flexbox en el TR y ocultar bordes.
-    */
-    
-    /* REINICIO TOTAL DE CELDAS PARA MÓVIL */
+    /* 4. Estilo de cada "Dato" (Celda) */
     .tabla-animales td {
-        display: block;
-        padding: 2px 0;
-        border: none;
-        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f5f5f5;
+        font-size: 0.95rem;
     }
+    .tabla-animales td:last-child { border-bottom: none; }
 
-    /* OCULTAR ETIQUETAS "data-label" que pusimos antes, ensucian */
-    .tabla-animales td::before { display: none; }
-
-    /* 1. CARAVANA: Grande y Negra */
-    .td-caravana {
-        grid-column: 2; /* Columna del medio */
-        font-size: 1.1rem; color: #333; margin-bottom: 4px;
-    }
-
-    /* 2. CATEGORÍA: Debajo de caravana */
-    td[data-label="Categoría"] {
-        grid-column: 2;
+    /* 5. Usar el data-label como título del dato */
+    .tabla-animales td::before {
+        content: attr(data-label); /* Toma el texto del HTML */
+        font-weight: 600;
+        color: #777;
         font-size: 0.85rem;
+        text-transform: uppercase;
     }
+
+    /* AJUSTES ESPECÍFICOS */
     
-    /* 3. UBICACIÓN y PESO: En línea pequeña gris */
-    td[data-label="Ubicación"], td[data-label="Peso"], td[data-label="Raza"] {
-        grid-column: 2;
-        color: #888;
-        font-size: 0.8rem;
-        display: inline-block; /* Para que se pongan uno al lado del otro si entran */
-        margin-right: 10px;
+    /* Checkbox: Lo ponemos grande arriba a la izquierda */
+    .td-check { 
+        position: absolute; top: 15px; right: 15px; 
+        width: auto !important; border: none !important; padding: 0 !important;
     }
-    
-    /* Agregamos iconos o texto helper con CSS */
-    td[data-label="Ubicación"]::before { content: "📍 "; display: inline; }
-    td[data-label="Peso"]::before { content: "⚖️ "; display: inline; }
-    
-    /* 4. ACCIONES: Botón a la derecha */
-    .td-actions {
-        grid-column: 3; /* Columna derecha */
-        grid-row: 1 / span 4; /* Ocupa toda la altura */
-        display: flex; 
-        justify-content: center; align-items: center;
+    .td-check::before { content: none !important; } /* Sin etiqueta */
+    .td-check input { width: 20px; height: 20px; }
+
+    /* Caravana: La hacemos parecer un Título */
+    .td-caravana {
+        font-size: 1.2rem; margin-bottom: 10px; border-bottom: 2px solid #eee !important; padding-bottom: 10px !important;
     }
-    
-    .btn-delete-mini {
-        font-size: 1.2rem; opacity: 0.6; color: #999; padding: 10px;
-    }
-    .btn-delete-mini:hover { color: red; opacity: 1; }
-    
-    /* Checkbox Container */
-    .td-check {
-        grid-column: 1;
-        grid-row: 1 / span 4;
-        display: flex; justify-content: center; align-items: center;
-    }
+    .td-caravana::before { display: none; } /* Ocultar la palabra "Caravana" */
+
+    /* Acciones: Botón borrar grande abajo */
+    .td-actions { justify-content: flex-end; padding-top: 10px !important; }
+    .td-actions::before { display: none; }
+    .btn-delete-mini { font-size: 1.5rem; opacity: 1; color: #d32f2f; background: #ffebee; padding: 5px 10px; border-radius: 6px; }
 }
+
+/* MODALES */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+.modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+.form-row { margin-bottom: 15px; }
+.form-row label { display: block; margin-bottom: 5px; font-weight: 500; color: #555; }
+.modal-content input, .modal-content select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.btn-confirm { background-color: #1976d2; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
