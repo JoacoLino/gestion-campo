@@ -1,29 +1,32 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import './layout.css'; // Crearemos este CSS enseguida
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import './Layout.css'; // Importamos su CSS específico
 
 const Layout = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false); // Estado para abrir/cerrar menú
+  const [isOpen, setIsOpen] = useState(false); // Estado para abrir/cerrar en móvil
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // Capturamos el ID del campo para armar los links correctamente
+  const { campo_id } = useParams(); 
 
-  // Función para saber si el link está activo
-  const isActive = (path) => location.pathname === path ? 'active' : '';
+  // Función para marcar el botón activo
+  const isActive = (path) => location.pathname.includes(path) ? 'active' : '';
 
-  // Menú de navegación
   const menuItems = [
-    { name: 'Resumen', path: '/campo-selection', icon: '📊' },
-    { name: 'Lotes', path: '/lotes', icon: '🗺️' },
-    { name: 'Ganado', path: '/ganado', icon: '🐄' },
-    { name: 'Sanidad', path: '/sanidad', icon: '💉' },
-    { name: 'Agenda', path: '/agenda', icon: '📅' }, // Si ya la creaste
-    { name: 'Insumos', path: '/insumos', icon: '📦' },
+    { name: 'Resumen', path: `/dashboard/${campo_id}`, icon: '📊' },
+    { name: 'Lotes', path: `/dashboard/${campo_id}/lotes`, icon: '🗺️' },
+    { name: 'Ganado', path: `/dashboard/${campo_id}/animales`, icon: '🐄' },
+    { name: 'Sanidad', path: `/dashboard/${campo_id}/sanidad`, icon: '💉' },
+    { name: 'Agenda', path: `/dashboard/${campo_id}/agenda`, icon: '📅' },
+    { name: 'Insumos', path: `/dashboard/${campo_id}/insumos`, icon: '📦' },
   ];
 
   return (
     <div className="layout-container">
-      {/* BOTÓN HAMBURGUESA (Solo visible en móvil) */}
-      <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
+      
+      {/* BOTÓN HAMBURGUESA (Solo visible en Móvil) */}
+      <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
         ☰
       </button>
 
@@ -33,15 +36,15 @@ const Layout = ({ children }) => {
           <h3>🌾 Mi Campo SaaS</h3>
           <button className="close-menu" onClick={() => setIsOpen(false)}>×</button>
         </div>
-        
-        <nav>
+
+        <nav className="sidebar-nav">
           {menuItems.map((item) => (
             <div 
               key={item.name} 
-              className={`menu-item ${isActive(item.path)}`}
+              className={`nav-item ${isActive(item.path)}`}
               onClick={() => {
                 navigate(item.path);
-                setIsOpen(false); // Cerrar menú al hacer click en móvil
+                setIsOpen(false); // Cerrar menú al hacer clic (móvil)
               }}
             >
               <span className="icon">{item.icon}</span>
@@ -51,19 +54,19 @@ const Layout = ({ children }) => {
         </nav>
 
         <div className="sidebar-footer">
-            <button className="btn-logout" onClick={() => navigate('/')}>
-                ← Salir
+            <button className="btn-back" onClick={() => navigate('/campo-selection')}>
+                ← Cambiar Campo
             </button>
         </div>
       </aside>
 
-      {/* CONTENIDO PRINCIPAL (Aquí se carga Resumen, Lotes, etc.) */}
+      {/* CONTENIDO PRINCIPAL (Aquí se inyectará tu Resumen) */}
       <main className="main-content">
+        {/* Fondo oscuro para cuando el menú está abierto en móvil */}
+        {isOpen && <div className="overlay" onClick={() => setIsOpen(false)}></div>}
+        
         {children}
       </main>
-
-      {/* OSCURECER FONDO CUANDO EL MENÚ ESTÁ ABIERTO EN MÓVIL */}
-      {isOpen && <div className="overlay" onClick={() => setIsOpen(false)}></div>}
     </div>
   );
 };

@@ -1,156 +1,93 @@
-/* src/components/Layout.css */
-
-/* Contenedor principal: Ocupa toda la pantalla */
+/* --- ESTILO BASE (PC / ESCRITORIO) --- */
 .layout-container {
-    display: flex; /* Pone el Sidebar y el Main uno al lado del otro */
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden; /* Evita scrolls dobles */
-    background-color: #f4f6f8;
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8f9fa; /* Fondo general suave */
+    position: relative;
 }
 
-/* --- SIDEBAR (PC) --- */
+/* SIDEBAR: Fijo a la izquierda, ancho 250px */
 .sidebar {
-    width: 260px; /* Ancho fijo */
-    background-color: white;
+    width: 250px;
+    height: 100vh;
+    background: white;
     border-right: 1px solid #e0e0e0;
+    position: fixed; /* Clave: Se queda quieto al scrollear */
+    top: 0;
+    left: 0;
+    z-index: 1000;
     display: flex;
     flex-direction: column;
     padding: 20px;
-    /* Flex-shrink 0 evita que el menú se aplaste si falta espacio */
-    flex-shrink: 0; 
-    transition: transform 0.3s ease;
-    z-index: 1000;
+    transition: transform 0.3s ease; /* Animación suave para móvil */
 }
 
-.sidebar-header h3 {
-    color: #1b5e20; /* Un verde más "campo" */
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Items del menú */
-.menu-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    margin-bottom: 5px;
-    border-radius: 8px;
-    cursor: pointer;
-    color: #546e7a;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.menu-item:hover {
-    background-color: #f1f8e9;
-    color: #2e7d32;
-}
-
-.menu-item.active {
-    background-color: #e8f5e9;
-    color: #1b5e20;
-    font-weight: bold;
-}
-
-.menu-item .icon {
-    margin-right: 12px;
-    font-size: 1.2rem;
-}
-
-.sidebar-footer {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.btn-logout {
-    padding: 10px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: 0.2s;
-}
-
-/* Botones ocultos en PC */
-.menu-toggle, .close-menu { display: none; }
-
-/* --- CONTENIDO PRINCIPAL --- */
+/* CONTENIDO PRINCIPAL: Deja espacio para el menú */
 .main-content {
-    flex-grow: 1; /* Ocupa TODO el espacio restante */
-    overflow-y: auto; /* El scroll va DENTRO del contenido, no en toda la página */
-    padding: 30px; /* Espacio interno generoso */
-    background-color: #f8fafc;
+    margin-left: 250px; /* IMPORTANTE: Deja el hueco exacto del menú */
+    width: calc(100% - 250px); /* Ocupa el resto */
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
-/* =========================================
-   MÓVIL (Pantallas menores a 768px)
-   ========================================= */
+/* Estilos visuales del menú */
+.sidebar-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+.sidebar-header h3 { color: #2e7d32; margin: 0; font-size: 1.2rem; }
+.close-menu { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+
+.nav-item {
+    padding: 12px 15px; margin-bottom: 5px; border-radius: 8px;
+    cursor: pointer; color: #555; display: flex; align-items: center; gap: 10px;
+    transition: background 0.2s;
+    font-weight: 500;
+}
+.nav-item:hover { background-color: #e8f5e9; color: #1b5e20; }
+.nav-item.active { background-color: #c8e6c9; color: #1b5e20; font-weight: bold; }
+.nav-item .icon { font-size: 1.2rem; }
+
+.btn-back { margin-top: auto; padding: 10px; background: #f1f1f1; border: none; border-radius: 6px; cursor: pointer; width: 100%; color: #666; font-weight: 500; transition: 0.2s; }
+.btn-back:hover { background: #e0e0e0; color: #333; }
+
+/* En PC ocultamos el botón hamburguesa */
+.mobile-toggle { display: none; }
+
+
+/* --- ESTILO MÓVIL (Celular < 768px) --- */
 @media (max-width: 768px) {
     
-    .layout-container {
-        flex-direction: column; /* Cambia dirección para permitir overlay */
-    }
-
-    /* El Sidebar ahora flota sobre el contenido */
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100%;
-        transform: translateX(-100%); /* Escondido a la izquierda */
-        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-    }
-
-    .sidebar.open {
-        transform: translateX(0); /* Aparece */
-    }
-
-    /* Botón Hamburguesa */
-    .menu-toggle {
+    /* 1. Botón Hamburguesa VISIBLE */
+    .mobile-toggle {
         display: block;
-        position: fixed; /* Flotante siempre visible */
-        top: 15px;
-        left: 15px;
-        z-index: 999;
-        background: white;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        font-size: 1.5rem;
-    }
-
-    .close-menu {
-        display: block;
-        background: none;
-        border: none;
-        font-size: 1.8rem;
-        position: absolute;
-        top: 15px;
-        right: 15px;
+        position: fixed; top: 15px; left: 15px; z-index: 2000;
+        background: #2e7d32; color: white; border: none;
+        padding: 8px 12px; border-radius: 6px; font-size: 1.5rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         cursor: pointer;
     }
 
-    /* El contenido ocupa todo el ancho en móvil */
-    .main-content {
-        width: 100%;
-        padding: 15px;
-        padding-top: 70px; /* Espacio para no quedar tapado por el botón menú */
+    /* 2. Sidebar ESCONDIDO (fuera de pantalla a la izquierda) */
+    .sidebar {
+        transform: translateX(-100%);
+        box-shadow: 2px 0 10px rgba(0,0,0,0.2);
     }
 
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
+    /* 3. Sidebar ABIERTO (entra a la pantalla) */
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .close-menu { display: block; } /* Mostrar la X para cerrar */
+
+    /* 4. Contenido ocupa TODO el ancho (ya no hay margen) */
+    .main-content {
+        margin-left: 0;
         width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 900;
+        padding-top: 60px; /* Espacio arriba para el botón hamburguesa */
+    }
+
+    /* Fondo oscuro al abrir menú */
+    .overlay {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.5); z-index: 900;
     }
 }

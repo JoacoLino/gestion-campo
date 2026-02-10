@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Layout from '../components/layout'; // <--- IMPORTANTE: Importamos el Layout
 import api from '../api/axios_config';
 import './resumen.css';
 
-// --- IMPORTAMOS LOS GRÁFICOS (Agregamos BarChart y sus amigos) ---
+// --- Imports de Recharts ---
 import { 
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid // <--- Nuevos imports
+  BarChart, Bar, XAxis, YAxis, CartesianGrid 
 } from 'recharts';
 
 const Resumen = () => {
@@ -19,11 +20,11 @@ const Resumen = () => {
     total_eventos: 0,
     categorias: {},
     alertas: [],
-    actividad_mensual: [] // <--- Estado nuevo
+    actividad_mensual: []
   });
   const [loading, setLoading] = useState(true);
 
-  // Colores para el gráfico de torta
+  // Colores gráfico torta
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const Resumen = () => {
     fetchStats();
   }, [campo_id]);
 
-  // --- LÓGICA DE CLIMA (Igual que antes) ---
+  // --- Lógica Clima ---
   const [clima, setClima] = useState({ temp: '--', code: 0, city: 'Cargando...' });
 
   useEffect(() => {
@@ -100,142 +101,139 @@ const Resumen = () => {
     }
   };
 
-  // Datos para gráfico de Torta
   const dataGrafico = Object.keys(stats.categorias).map((key) => ({
     name: key,
     value: stats.categorias[key]
   }));
 
-  // Datos para gráfico de Barras (Ya vienen listos del backend)
   const dataBarras = stats.actividad_mensual || [];
 
   if (loading) return <div className="loading-screen">Calculando índices productivos... 📊</div>;
 
   return (
-    <div className="resumen-container">
-      
-      {/* HEADER */}
-      <div className="dashboard-header">
-        <div>
-          <h2>Tablero de Control</h2>
-          <p className="subtitle">Visión general del establecimiento</p>
-        </div>
+    <Layout> {/* <--- TODO ENVUELTO EN LAYOUT */}
+        <div className="resumen-container">
         
-        <div style={{display: 'flex', gap: '15px', alignItems: 'center'}}>
-            <div className="weather-widget">
-                <span className="weather-icon">{clima.icon || '⏳'}</span>
-                <div className="weather-info">
-                    <span className="temp">{clima.temp}°C</span>
-                    <span className="city">{clima.city}</span>
+        {/* HEADER */}
+        <div className="dashboard-header">
+            <div className="header-titles">
+            <h2>Tablero de Control</h2>
+            <p className="subtitle">Visión general del establecimiento</p>
+            </div>
+            
+            <div className="header-actions">
+                <div className="weather-widget">
+                    <span className="weather-icon">{clima.icon || '⏳'}</span>
+                    <div className="weather-info">
+                        <span className="temp">{clima.temp}°C</span>
+                        <span className="city">{clima.city}</span>
+                    </div>
                 </div>
+
+                <button onClick={handleDescargarReporte} className="btn-reporte" title="Descargar Excel">
+                    📄 Exportar
+                </button>
+            </div>
+        </div>
+
+        {/* ALERTAS */}
+        {stats.alertas && stats.alertas.length > 0 && (
+            <div className="alertas-section">
+            {stats.alertas.map((alerta, index) => (
+                <div 
+                    key={index} 
+                    className={`alerta-banner alerta-${alerta.tipo}`}
+                    onClick={() => {
+                        const mensaje = alerta.mensaje.toLowerCase();
+                        if (mensaje.includes("sin lote")) navigate(`/dashboard/${campo_id}/animales?sin_lote=true`);
+                        else if (mensaje.includes("peso")) navigate(`/dashboard/${campo_id}/animales`); 
+                        else if (mensaje.includes("potreros")) navigate(`/dashboard/${campo_id}/lotes`);
+                        else if (mensaje.includes("tareas")) navigate(`/dashboard/${campo_id}/agenda`);
+                    }}
+                >
+                    <div className="alerta-content">
+                        <span className="alerta-icon">
+                            {alerta.tipo === 'danger' ? '⚠️' : alerta.tipo === 'warning' ? '⚡' : 'ℹ️'}
+                        </span>
+                        <span>{alerta.mensaje}</span>
+                    </div>
+                    <span className="alerta-arrow">→</span>
+                </div>
+            ))}
+            </div>
+        )}
+
+        {/* KPI CARDS (Números) */}
+        <div className="kpi-grid">
+            <div className="kpi-card card-blue" onClick={() => navigate(`/dashboard/${campo_id}/animales`)}>
+                <h3>🐄 Stock Total</h3>
+                <p className="kpi-number">{stats.total_animales}</p>
+                <span className="kpi-label">Cabezas</span>
+            </div>
+            
+            <div className="kpi-card card-green" onClick={() => navigate(`/dashboard/${campo_id}/lotes`)}>
+                <h3>🗺️ Lotes</h3>
+                <p className="kpi-number">{stats.total_lotes}</p>
+                <span className="kpi-label">Potreros definidos</span>
             </div>
 
-            <button onClick={handleDescargarReporte} className="btn-reporte" title="Descargar Excel">
-                📄 Exportar
-            </button>
-        </div>
-      </div>
-
-      {/* ALERTAS */}
-      {stats.alertas && stats.alertas.length > 0 && (
-        <div className="alertas-section">
-          {stats.alertas.map((alerta, index) => (
-              <div 
-                  key={index} 
-                  className={`alerta-banner alerta-${alerta.tipo}`}
-                  onClick={() => {
-                      const mensaje = alerta.mensaje.toLowerCase();
-                      if (mensaje.includes("sin lote")) navigate(`/dashboard/${campo_id}/animales?sin_lote=true`);
-                      else if (mensaje.includes("peso")) navigate(`/dashboard/${campo_id}/animales`); 
-                      else if (mensaje.includes("potreros")) navigate(`/dashboard/${campo_id}/lotes`);
-                      else if (mensaje.includes("tareas")) navigate(`/dashboard/${campo_id}/agenda`);
-                  }}
-                  style={{ cursor: 'pointer' }}
-              >
-                  <div className="alerta-content">
-                      <span className="alerta-icon">
-                          {alerta.tipo === 'danger' ? '⚠️' : alerta.tipo === 'warning' ? '⚡' : 'ℹ️'}
-                      </span>
-                      <span>{alerta.mensaje}</span>
-                  </div>
-                  <span className="alerta-arrow">→</span>
-              </div>
-          ))}
-        </div>
-      )}
-
-      {/* KPI CARDS */}
-      <div className="kpi-grid">
-        <div className="kpi-card card-blue" onClick={() => navigate(`/dashboard/${campo_id}/animales`)}>
-            <h3>🐄 Stock Total</h3>
-            <p className="kpi-number">{stats.total_animales}</p>
-            <span className="kpi-label">Cabezas</span>
-        </div>
-        
-        <div className="kpi-card card-green" onClick={() => navigate(`/dashboard/${campo_id}/lotes`)}>
-            <h3>🗺️ Lotes</h3>
-            <p className="kpi-number">{stats.total_lotes}</p>
-            <span className="kpi-label">Potreros definidos</span>
+            <div className="kpi-card card-orange" onClick={() => navigate(`/dashboard/${campo_id}/sanidad`)}>
+                <h3>💉 Sanidad</h3>
+                <p className="kpi-number">{stats.total_eventos}</p>
+                <span className="kpi-label">Eventos este año</span>
+            </div>
         </div>
 
-        <div className="kpi-card card-orange" onClick={() => navigate(`/dashboard/${campo_id}/sanidad`)}>
-            <h3>💉 Sanidad</h3>
-            <p className="kpi-number">{stats.total_eventos}</p>
-            <span className="kpi-label">Eventos este año</span>
-        </div>
-      </div>
+        {/* GRÁFICOS */}
+        <div className="charts-grid">
+            
+            {/* GRÁFICO DE DONA */}
+            <div className="chart-card">
+                <h3>Distribución del Rodeo</h3>
+                {dataGrafico.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                        <PieChart>
+                            <Pie
+                                data={dataGrafico}
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={60}
+                                outerRadius={80}
+                                fill="#8884d8"
+                                paddingAngle={5}
+                                dataKey="value"
+                            >
+                                {dataGrafico.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend verticalAlign="bottom" height={36}/>
+                        </PieChart>
+                    </ResponsiveContainer>
+                ) : (
+                    <p className="no-data">Cargá animales para ver el gráfico.</p>
+                )}
+            </div>
 
-      {/* GRÁFICOS */}
-      <div className="charts-grid">
-        
-        {/* GRÁFICO DE DONA */}
-        <div className="chart-card">
-            <h3>Distribución del Rodeo</h3>
-            {dataGrafico.length > 0 ? (
-                /* SOLUCIÓN: Quitamos el div intermedio y ponemos height fijo al container */
+            {/* BARRAS */}
+            <div className="chart-card">
+                <h3>Actividad Sanitaria (2025)</h3>
                 <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                        <Pie
-                            data={dataGrafico}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            paddingAngle={5}
-                            dataKey="value"
-                        >
-                            {dataGrafico.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                        </Pie>
-                        <Tooltip />
-                        <Legend verticalAlign="bottom" height={36}/>
-                    </PieChart>
+                    <BarChart data={dataBarras}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis dataKey="name" tick={{fontSize: 12}} />
+                        <YAxis allowDecimals={false} />
+                        <Tooltip 
+                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
+                        />
+                        <Bar dataKey="eventos" fill="#ff9800" radius={[4, 4, 0, 0]} name="Eventos" />
+                    </BarChart>
                 </ResponsiveContainer>
-            ) : (
-                <p className="no-data">Cargá animales para ver el gráfico.</p>
-            )}
+            </div>
         </div>
-
-        {/* 2. BARRAS: ACTIVIDAD MENSUAL */}
-        <div className="chart-card">
-            <h3>Actividad Sanitaria (2025)</h3>
-            {/* SOLUCIÓN: Height numérico directo (300) en lugar de porcentaje */}
-            <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={dataBarras}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" tick={{fontSize: 12}} />
-                    <YAxis allowDecimals={false} />
-                    <Tooltip 
-                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}
-                    />
-                    <Bar dataKey="eventos" fill="#ff9800" radius={[4, 4, 0, 0]} name="Eventos" />
-                </BarChart>
-            </ResponsiveContainer>
         </div>
-      </div>
-    </div>
+    </Layout>
   );
 };
 
