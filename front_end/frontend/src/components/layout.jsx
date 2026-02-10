@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import './Layout.css'; // Importamos su CSS específico
+import './layout.css'; // Importamos su CSS específico
 
 const Layout = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false); // Estado para abrir/cerrar en móvil
