@@ -1,99 +1,126 @@
 /* =======================================================
-   VERSION MÓVIL (< 768px): TARJETAS PREMIUM
+   VERSION MÓVIL (< 768px): LISTA LIMPIA (Estilo App)
    ======================================================= */
 @media (max-width: 768px) {
-    .animales-container { padding: 15px; }
+    .animales-container { 
+        padding: 0; /* Aprovechar todo el ancho */
+        background-color: white; /* Fondo blanco para parecer app nativa */
+    }
     
     /* Header compacto */
-    .dashboard-header { flex-direction: column; align-items: flex-start; gap: 15px; }
-    .header-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    /* El botón Alta ocupa todo el ancho abajo */
-    .btn-add-animal { grid-column: span 2; padding: 12px; font-size: 1rem; }
-    
-    /* Ocultamos tabla clásica */
+    .dashboard-header { 
+        padding: 15px; 
+        border-bottom: 1px solid #f0f0f0;
+        margin-bottom: 0;
+        background: #f8f9fa;
+    }
+
+    /* Acciones en dos filas */
+    .header-actions { 
+        width: 100%; 
+        display: grid; 
+        grid-template-columns: 1fr 1fr; 
+        gap: 10px; 
+        margin-top: 10px;
+    }
+    .btn-add-animal { grid-column: span 2; } /* Botón Alta ocupa todo el ancho */
+
+    /* Ocultamos los títulos de la tabla */
     .tabla-animales thead { display: none; }
-    .tabla-animales, .tabla-animales tbody, .tabla-animales tr, .tabla-animales td {
-        display: block; width: 100%; box-sizing: border-box;
+
+    /* Contenedor de la lista */
+    .table-responsive {
+        border-radius: 0; 
+        box-shadow: none;
     }
 
-    /* --- TARJETA DE ANIMAL --- */
+    .tabla-animales {
+        display: block;
+    }
+
+    .tabla-animales tbody {
+        display: block;
+    }
+
+    /* --- FILA DE ANIMAL (Estilo Lista) --- */
     .tabla-animales tr {
-        margin-bottom: 20px;
+        display: grid;
+        /* 3 Columnas: Checkbox | Info Principal | Botón Borrar */
+        grid-template-columns: 40px 1fr 50px; 
+        align-items: center;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 12px 10px;
         background: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 16px; /* Bordes más redondeados */
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Sombra suave */
-        position: relative;
-        overflow: hidden; /* Para que el header de color no se salga */
-        padding: 0;
     }
 
-    /* Borde superior de color (Decorativo) */
-    .tabla-animales tr::before {
-        content: '';
-        position: absolute; top: 0; left: 0; width: 100%; height: 6px;
-        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%); /* Azul por defecto */
-        z-index: 2;
+    /* Celda Checkbox */
+    .tabla-animales td:first-child { 
+        padding: 0; border: none; text-align: center;
+    }
+    .tabla-animales td:first-child input { 
+        width: 20px; height: 20px; margin: 0; 
     }
 
-    /* --- CELDAS ESPECÍFICAS --- */
-
-    /* 1. CARAVANA (Título Grande) */
-    .td-caravana {
-        padding: 20px 20px 5px 20px !important;
-        border: none !important;
-    }
-    .td-caravana strong {
-        font-size: 1.6rem; color: #333; font-weight: 800; letter-spacing: -0.5px;
-    }
-
-    /* 2. CHECKBOX (Flotante a la izquierda) */
-    .td-check {
-        position: absolute; top: 20px; right: 60px; /* Al lado del botón borrar */
-        width: auto !important; padding: 0 !important; border: none !important;
-        z-index: 10;
-    }
-    .td-check input { width: 22px; height: 22px; accent-color: #1976d2; }
-
-    /* 3. BOTÓN BORRAR (Flotante a la derecha) */
-    .td-actions {
-        position: absolute; top: 15px; right: 15px;
-        width: auto !important; padding: 0 !important; border: none !important;
-    }
-    .btn-delete-mini {
-        background: #ffebee; color: #d32f2f;
-        width: 35px; height: 35px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.2rem; opacity: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    /* 4. RESTO DE DATOS (Grid de 2 columnas) */
+    /* Celda Info (Agrupamos las columnas de datos aquí) */
+    /* Para que esto funcione bien, vamos a ocultar las celdas individuales 
+       y mostrar solo lo importante o reordenarlo visualmente es complejo solo con CSS.
+       
+       MEJOR ESTRATEGIA: Usar Flexbox en el TR y ocultar bordes.
+    */
+    
+    /* REINICIO TOTAL DE CELDAS PARA MÓVIL */
     .tabla-animales td {
-        border: none !important;
-        padding: 5px 20px !important;
-        display: flex; flex-direction: column; align-items: flex-start; /* Etiqueta arriba, valor abajo */
-    }
-    
-    /* Etiqueta pequeña */
-    .tabla-animales td::before {
-        font-size: 0.75rem; color: #888; text-transform: uppercase; margin-bottom: 2px;
-        font-weight: 700;
+        display: block;
+        padding: 2px 0;
+        border: none;
+        text-align: left;
     }
 
-    /* Acomodamos en GRID */
-    /* Categoría y Raza en la misma línea */
-    td[data-label="Categoría"] { float: left; width: 50%; clear: both; margin-top: 10px; }
-    td[data-label="Raza"] { float: right; width: 50%; margin-top: 10px; }
+    /* OCULTAR ETIQUETAS "data-label" que pusimos antes, ensucian */
+    .tabla-animales td::before { display: none; }
+
+    /* 1. CARAVANA: Grande y Negra */
+    .td-caravana {
+        grid-column: 2; /* Columna del medio */
+        font-size: 1.1rem; color: #333; margin-bottom: 4px;
+    }
+
+    /* 2. CATEGORÍA: Debajo de caravana */
+    td[data-label="Categoría"] {
+        grid-column: 2;
+        font-size: 0.85rem;
+    }
     
-    /* Peso y Ubicación en la siguiente línea */
-    td[data-label="Peso"] { float: left; width: 50%; clear: both; margin-bottom: 20px; }
-    td[data-label="Ubicación"] { float: right; width: 50%; margin-bottom: 20px; }
+    /* 3. UBICACIÓN y PESO: En línea pequeña gris */
+    td[data-label="Ubicación"], td[data-label="Peso"], td[data-label="Raza"] {
+        grid-column: 2;
+        color: #888;
+        font-size: 0.8rem;
+        display: inline-block; /* Para que se pongan uno al lado del otro si entran */
+        margin-right: 10px;
+    }
     
-    /* Badges más grandes en móvil */
-    .badge { padding: 6px 12px; font-size: 0.9rem; }
+    /* Agregamos iconos o texto helper con CSS */
+    td[data-label="Ubicación"]::before { content: "📍 "; display: inline; }
+    td[data-label="Peso"]::before { content: "⚖️ "; display: inline; }
     
-    /* Limpiar floats al final */
-    .tabla-animales tr::after {
-        content: ""; display: table; clear: both;
+    /* 4. ACCIONES: Botón a la derecha */
+    .td-actions {
+        grid-column: 3; /* Columna derecha */
+        grid-row: 1 / span 4; /* Ocupa toda la altura */
+        display: flex; 
+        justify-content: center; align-items: center;
+    }
+    
+    .btn-delete-mini {
+        font-size: 1.2rem; opacity: 0.6; color: #999; padding: 10px;
+    }
+    .btn-delete-mini:hover { color: red; opacity: 1; }
+    
+    /* Checkbox Container */
+    .td-check {
+        grid-column: 1;
+        grid-row: 1 / span 4;
+        display: flex; justify-content: center; align-items: center;
     }
 }
