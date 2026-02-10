@@ -1,120 +1,108 @@
+/* CONTAINER GENERAL (Igual que Resumen) */
 .sanidad-container {
-    padding: 10px;
-    max-width: 800px;
+    max-width: 1000px; /* Ancho controlado */
     margin: 0 auto;
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.btn-add-sanidad {
-    background-color: #0288d1; /* Azul médico */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-/* Lista de eventos */
-.timeline-sanidad {
+/* HEADER (Reutilizamos estilos para consistencia) */
+.dashboard-header {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 1rem;
+    flex-wrap: wrap;
     gap: 15px;
-    margin-top: 20px;
 }
+.dashboard-header h2 { margin: 0; color: #111; font-size: 1.5rem; }
+.subtitle { margin: 5px 0 0 0; color: #666; font-size: 0.9rem; }
+.header-actions { display: flex; gap: 10px; }
+
+/* BOTONES */
+.btn-add-sanidad {
+    background-color: #0288d1; color: white; border: none; padding: 10px 20px;
+    border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+}
+.btn-excel {
+    background-color: #2e7d32; color: white; border: none; padding: 10px 16px;
+    border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+}
+
+/* LISTA DE EVENTOS */
+.timeline-sanidad { display: flex; flex-direction: column; gap: 15px; }
 
 .evento-card {
-    display: flex;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 15px;
-    align-items: center;
-    gap: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    background: white; border: 1px solid #e0e0e0; border-radius: 10px;
+    padding: 15px; display: flex; align-items: center; gap: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
 .evento-date {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f1f5f9;
-    padding: 8px 12px;
-    border-radius: 8px;
-    min-width: 60px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background-color: #f1f5f9; padding: 8px 12px; border-radius: 8px; min-width: 50px;
 }
+.day { font-size: 1.2rem; font-weight: bold; color: #333; line-height: 1; }
+.month { font-size: 0.8rem; color: #666; text-transform: uppercase; }
 
-.evento-date .day { font-size: 1.2rem; font-weight: bold; color: #333; }
-.evento-date .month { font-size: 0.8rem; color: #666; }
+.evento-info { flex: 1; }
 
-.evento-info {
-    flex: 1;
-}
-
-.evento-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 5px;
-}
+.evento-header { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; flex-wrap: wrap; }
+.producto { color: #1a1a1a; font-size: 1rem; }
+.costo { color: #666; font-size: 0.9rem; }
 
 .badge-tipo {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    font-weight: bold;
-    color: white;
-    background-color: #78909c; /* Default */
+    padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase;
+    font-weight: bold; color: white; background-color: #78909c;
 }
-
 .badge-tipo.vacunación { background-color: #4caf50; }
 .badge-tipo.antibiótico { background-color: #f44336; }
 .badge-tipo.tacto { background-color: #ff9800; }
 
-.producto { color: #1a1a1a; font-size: 1rem; }
+.alcance { margin: 0; font-size: 0.9rem; color: #444; }
+.notas { font-style: italic; color: #777; font-size: 0.85rem; margin-top: 5px; }
 
-.alcance { margin: 5px 0; font-size: 0.9rem; color: #555; }
-.notas { font-style: italic; color: #777; font-size: 0.85rem; margin: 0; }
+.btn-delete-mini {
+    background: none; border: none; cursor: pointer; font-size: 1.2rem; opacity: 0.5; transition: 0.2s;
+}
+.btn-delete-mini:hover { opacity: 1; transform: scale(1.1); }
 
-.select-animal {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff8e1; /* Un colorcito suave para resaltar */
-    font-weight: 500;
+
+/* --- MÓVIL (< 768px) --- */
+@media (max-width: 768px) {
+    .sanidad-container { padding: 1rem; width: 100%; box-sizing: border-box; }
+    
+    .dashboard-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .header-actions { width: 100%; justify-content: space-between; }
+    
+    .evento-card {
+        flex-direction: column; /* Apilar fecha e info */
+        align-items: flex-start; gap: 10px;
+    }
+    .evento-date {
+        flex-direction: row; gap: 5px; width: 100%; justify-content: flex-start;
+        background: none; padding: 0; margin-bottom: 5px;
+    }
+    .day { font-size: 1rem; }
+    .month { font-size: 1rem; }
+    
+    .btn-delete-mini { align-self: flex-end; margin-top: -30px; }
 }
 
-/* Contenedor para pegar los botones a la derecha juntos */
-.actions-group {
-    display: flex;
-    gap: 12px; /* Espacio entre el botón Excel y el de Crear */
-    align-items: center;
+/* MODAL (Estándar) */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000;
 }
-
-/* Estilo profesional para el botón Excel */
-.btn-excel {
-    background-color: #2e7d32; /* Verde Excel */
-    color: white;
-    border: 1px solid #1b5e20;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Espacio entre icono y texto */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    transition: all 0.2s ease;
-    height: 40px; /* Altura fija para alinearse con los otros botones */
+.modal-content {
+    background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
-
-.btn-excel:hover {
-    background-color: #1b5e20;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+.modal-content h3 { margin-top: 0; color: #333; }
+.modal-content input, .modal-content select, .modal-content textarea {
+    width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;
 }
-
-.btn-excel:active {
-    transform: translateY(0);
-}
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.btn-confirm { background-color: #2e7d32; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
