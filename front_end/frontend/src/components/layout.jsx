@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import './Layout.css';
+import './layout.css';
 
 const Layout = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
