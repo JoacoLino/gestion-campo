@@ -1,148 +1,227 @@
 /* =======================================================
-   ESTILO BASE (PC / ESCRITORIO) 💻
-   Se aplica siempre, a menos que una regla móvil lo pise.
+   ESTILO GENERAL (BASE)
    ======================================================= */
-
 .resumen-container {
-    padding: 30px;
-    max-width: 1400px; /* Que no se estire infinito en monitores 4k */
-    margin: 0 auto;
-    background-color: #f8f9fa; /* Fondo suave */
-    min-height: 100vh;
+    /* 1. TRUCO DE ELEGANCIA: No dejes que ocupe 1400px, es mucho para 3 tarjetas.
+       1100px es el estándar de dashboards modernos (tipo Stripe o Vercel). */
+    max-width: 1100px; 
+    margin: 0 auto; /* Centrar el contenido en el espacio disponible */
+    padding: 2rem;  /* Espacio interno cómodo */
+    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-/* HEADER: Horizontal y espacioso */
+/* HEADER: Limpio y alineado */
 .dashboard-header {
     display: flex;
     justify-content: space-between;
-    align-items: center; /* Centrado verticalmente */
-    margin-bottom: 40px;
+    align-items: flex-end; /* Alinea el texto abajo con los botones */
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eaeaea; /* Línea sutil separadora */
+    padding-bottom: 1rem;
+}
+
+.dashboard-header h2 {
+    font-size: 1.5rem; /* Achicamos el título (antes era muy grande) */
+    margin: 0;
+    color: #111;
+}
+
+.subtitle {
+    margin: 5px 0 0 0;
+    color: #666;
+    font-size: 0.9rem;
 }
 
 .header-actions {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     align-items: center;
 }
 
-/* TARJETAS KPI (Números): 3 Columnas Estrictas */
+/* WIDGET CLIMA: Más compacto */
+.weather-widget {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 6px 12px;
+    border-radius: 8px; /* Bordes menos redondeados, más modernos */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+/* BOTÓN EXPORTAR */
+.btn-reporte {
+    background-color: #10b981; /* Verde esmeralda moderno */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.btn-reporte:hover { background-color: #059669; }
+
+/* =======================================================
+   GRID DE TARJETAS (KPIs) - PC
+   ======================================================= */
 .kpi-grid {
     display: grid;
-    /* MÁGICA DE PC: 3 columnas iguales */
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 30px; /* Espacio generoso entre tarjetas */
-    margin-bottom: 40px;
+    /* Usamos 3 columnas, pero con un alto fijo para que sean uniformes */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
 }
 
 .kpi-card {
     background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Sombra elegante */
-    text-align: center;
-    border-top: 5px solid #ccc;
-    transition: transform 0.2s;
+    border: 1px solid #eaeaea; /* Borde sutil en vez de sombra fuerte */
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 160px; /* Altura fija controlada (no gigante) */
+    position: relative;
+    overflow: hidden;
 }
 
 .kpi-card:hover {
-    transform: translateY(-5px); /* Efecto de levitar al pasar el mouse */
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-color: transparent;
 }
 
-.card-blue { border-top-color: #3498db; }
-.card-green { border-top-color: #2ecc71; }
-.card-orange { border-top-color: #e67e22; }
+/* Decoración superior de color (más fina) */
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+}
+.card-blue::before { background: #3b82f6; }
+.card-green::before { background: #10b981; }
+.card-orange::before { background: #f59e0b; }
+
+.kpi-card h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6b7280; /* Gris medio */
+    margin: 0;
+    margin-bottom: 10px;
+}
 
 .kpi-number {
-    font-size: 3.5rem; /* Número bien grande en PC */
-    font-weight: 800;
-    margin: 15px 0;
-    color: #2c3e50;
+    font-size: 2.5rem; /* Grande pero no grotesco */
+    font-weight: 700;
+    color: #111827; /* Casi negro */
+    margin: 0;
+    line-height: 1;
 }
 
-/* GRÁFICOS: 2 Columnas Estrictas (Mitad y Mitad) */
+.kpi-label {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    margin-top: 5px;
+}
+
+/* =======================================================
+   GRID DE GRÁFICOS - PC
+   ======================================================= */
 .charts-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; 
-    gap: 30px;
+    grid-template-columns: 1fr 1fr; /* Mitad y mitad */
+    gap: 20px;
 }
 
 .chart-card {
     background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    height: 400px; /* Altura fija para que queden parejos */
+    border: 1px solid #eaeaea;
+    border-radius: 10px;
+    padding: 20px;
+    height: 350px; /* Altura contenida */
     display: flex;
     flex-direction: column;
 }
 
-/* Estilos de botones y clima (igual que antes) */
-.weather-widget {
-    background: white; padding: 10px 20px; border-radius: 30px;
-    display: flex; align-items: center; gap: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+.chart-card h3 {
+    font-size: 1rem;
+    color: #374151;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 600;
 }
-
-.btn-reporte {
-    background-color: #27ae60; color: white; border: none;
-    padding: 10px 25px; border-radius: 30px; font-weight: bold; cursor: pointer;
-}
-
 
 /* =======================================================
-   ESTILO MÓVIL (CELULAR) 📱
-   Solo se activa si la pantalla mide menos de 768px.
+   RESPONSIVE: VISTA MÓVIL (< 768px) 📱
+   Aquí cambiamos las reglas del juego.
    ======================================================= */
 @media (max-width: 768px) {
     
     .resumen-container {
-        padding: 15px; /* Menos borde para aprovechar espacio */
+        padding: 1rem; /* Menos padding */
+        width: 100%; /* Usar todo el ancho disponible */
+        box-sizing: border-box; /* Evita scroll horizontal */
     }
 
-    /* HEADER: Cambia a vertical */
+    /* HEADER: Apilado */
     .dashboard-header {
-        flex-direction: column; /* Uno abajo del otro */
-        align-items: flex-start; /* Alineado a la izquierda */
+        flex-direction: column;
+        align-items: flex-start;
         gap: 15px;
     }
-
+    
     .header-actions {
         width: 100%;
-        justify-content: space-between; /* Clima a un lado, botón al otro */
+        justify-content: space-between; /* Clima a la izq, botón a la der */
     }
 
-    /* KPI: Cambia a 1 sola columna (filas) */
+    /* TARJETAS: Una debajo de la otra */
     .kpi-grid {
-        grid-template-columns: 1fr; /* Una sola columna */
+        grid-template-columns: 1fr; /* 1 Columna */
         gap: 15px;
     }
 
+    /* Diseño horizontal para tarjeta móvil (Ahorra espacio vertical) */
     .kpi-card {
-        padding: 20px; /* Tarjetas más compactas */
-        display: flex; /* Flex para poner número al lado del título si querés */
-        flex-direction: row; /* Horizontal en móvil para ahorrar altura */
+        height: auto; /* Altura automática */
+        flex-direction: row; /* Icono/Titulo a la izq, Numero a la der */
         justify-content: space-between;
-        align-items: center;
+        padding: 20px;
         text-align: left;
-    }
-
-    .kpi-number {
-        font-size: 2rem; /* Número más chico */
-        margin: 0;
+        align-items: center;
     }
 
     .kpi-card h3 {
+        margin-bottom: 0;
         font-size: 1rem;
-        margin: 0;
     }
 
-    /* GRÁFICOS: Cambia a 1 sola columna */
+    .kpi-number {
+        font-size: 2rem;
+    }
+    
+    .kpi-label {
+        display: none; /* Ocultamos el label pequeño en móvil para limpiar */
+    }
+
+    /* GRÁFICOS: Uno debajo del otro */
     .charts-grid {
         grid-template-columns: 1fr;
     }
-
+    
     .chart-card {
-        height: auto; /* Altura libre */
-        min-height: 300px;
+        height: 300px; /* Un poco más petisos en móvil */
     }
 }
