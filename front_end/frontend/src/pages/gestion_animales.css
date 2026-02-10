@@ -1,124 +1,142 @@
 /* CONTAINER GENERAL */
 .animales-container {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* HEADER (Consistente con otras paginas) */
+/* HEADER */
 .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 2rem;
-    min-height: 50px; /* Para evitar saltos cuando cambia el contenido */
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 2rem; min-height: 50px;
 }
 .dashboard-header h2 { margin: 0; color: #111; font-size: 1.5rem; }
 .subtitle { margin: 5px 0 0 0; color: #666; font-size: 0.9rem; }
 .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-/* BARRA DE SELECCIÓN (Azul cuando seleccionas filas) */
+/* BARRA SELECCIÓN */
 .selection-toolbar-header {
-    background-color: #e3f2fd; color: #0d47a1;
-    width: 100%; padding: 10px 15px; border-radius: 8px;
-    display: flex; justify-content: space-between; align-items: center;
-    border: 1px solid #90caf9;
+    background-color: #e3f2fd; color: #0d47a1; width: 100%; padding: 10px 15px; border-radius: 8px;
+    display: flex; justify-content: space-between; align-items: center; border: 1px solid #90caf9;
 }
-.selection-count { font-weight: bold; }
-.btn-move {
-    background-color: #1565c0; color: white; border: none; padding: 8px 16px;
-    border-radius: 6px; cursor: pointer; font-weight: 600;
-}
+.btn-move { background-color: #1565c0; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
 
 /* BOTONES */
-.btn-add-animal {
-    background-color: #1976d2; color: white; border: none; padding: 10px 20px;
-    border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
-}
-.btn-excel {
-    background-color: #2e7d32; color: white; border: 1px solid #1b5e20;
-    padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
-}
-.btn-filter {
-    background-color: #f5f5f5; color: #333; border: 1px solid #ccc;
-    padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;
-}
+.btn-add-animal { background-color: #1976d2; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+.btn-excel { background-color: #2e7d32; color: white; border: 1px solid #1b5e20; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+.btn-filter { background-color: #f5f5f5; color: #333; border: 1px solid #ccc; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
 .btn-filter.active { background-color: #e0e0e0; border-color: #999; }
 
-/* FILTROS DESPLEGABLES */
+/* FILTROS */
 .filter-bar {
     background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;
     border: 1px solid #e0e0e0; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;
 }
 .filter-group { display: flex; flex-direction: column; gap: 5px; }
-.filter-group label { font-size: 0.8rem; color: #666; font-weight: 600; }
 .filter-input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; min-width: 140px; }
 .btn-clear-filters { background: none; border: none; color: #d32f2f; cursor: pointer; text-decoration: underline; }
 
-/* TABLA (MÁGICA RESPONSIVE) */
-.table-responsive {
-    width: 100%;
-    overflow-x: auto; /* <--- ESTO PERMITE SCROLL LATERAL EN MÓVIL */
-    border-radius: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
+/* --- TABLA (Estilo PC) --- */
+.table-responsive { width: 100%; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; }
+.tabla-animales { width: 100%; border-collapse: collapse; background: white; }
 
-.tabla-animales {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    min-width: 600px; /* <--- FUERZA ANCHO MÍNIMO PARA QUE NO SE APLASTE */
-}
-
-.tabla-animales th, .tabla-animales td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-.tabla-animales th { background-color: #f8f9fa; color: #555; font-weight: 600; white-space: nowrap; }
-.tabla-animales tr:hover { background-color: #f1f8e9; }
+.tabla-animales th, .tabla-animales td { padding: 18px; text-align: left; border-bottom: 1px solid #eee; }
+.tabla-animales th { background-color: #f1f3f5; color: #495057; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+.tabla-animales tr:hover { background-color: #f8f9fa; }
 .row-selected { background-color: #e3f2fd !important; }
 
 /* BADGES */
-.badge { padding: 4px 8px; border-radius: 12px; font-size: 0.85rem; font-weight: 500; }
+.badge { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.3px; }
 .badge-vaca { background: #e3f2fd; color: #1976d2; }
 .badge-toro { background: #e8eaf6; color: #283593; }
 .badge-ternero { background: #fff3e0; color: #e65100; }
 .badge-default { background: #f5f5f5; color: #666; }
 
-.btn-delete-mini { background: none; border: none; cursor: pointer; font-size: 1.2rem; opacity: 0.5; }
-.btn-delete-mini:hover { opacity: 1; color: red; }
+.btn-delete-mini { background: none; border: none; cursor: pointer; font-size: 1.2rem; opacity: 0.3; transition: 0.2s; }
+.btn-delete-mini:hover { opacity: 1; color: #d32f2f; transform: scale(1.1); }
 
-/* MÓVIL (< 768px) */
+
+/* =======================================================
+   TRANSFORMACIÓN A TARJETAS (MÓVIL < 768px)
+   ======================================================= */
 @media (max-width: 768px) {
-    .animales-container { padding: 1rem; width: 100%; box-sizing: border-box; }
+    .animales-container { padding: 1rem; }
     
-    .dashboard-header { 
-        flex-direction: column; align-items: flex-start; gap: 15px; 
-    }
+    .dashboard-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .header-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .btn-add-animal, .btn-excel, .btn-filter { padding: 10px 5px; font-size: 0.8rem; justify-content: center; width: 100%; }
+    .filter-bar { flex-direction: column; align-items: stretch; }
+    .filter-input { width: 100%; box-sizing: border-box; }
+
+    /* --- MAGIA: TABLA SE VUELVE TARJETAS --- */
     
-    .header-actions { 
-        width: 100%; justify-content: space-between; 
-        display: grid; grid-template-columns: 1fr 1fr 1fr; /* Botones en fila */
-    }
+    /* 1. Ocultar encabezados de tabla */
+    .tabla-animales thead { display: none; }
     
-    .btn-add-animal, .btn-excel, .btn-filter {
-        padding: 10px 5px; font-size: 0.8rem; justify-content: center;
+    /* 2. Convertir tabla en bloque */
+    .tabla-animales, .tabla-animales tbody, .tabla-animales tr, .tabla-animales td {
+        display: block; width: 100%; box-sizing: border-box;
     }
 
-    /* En móvil, los filtros se apilan */
-    .filter-bar { flex-direction: column; align-items: stretch; }
-    .filter-input { width: 100%; }
+    /* 3. Estilo de cada "Tarjeta" (Fila) */
+    .tabla-animales tr {
+        margin-bottom: 15px;
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        padding: 15px;
+        position: relative; /* Para posicionar el checkbox/delete */
+    }
+
+    /* 4. Estilo de cada "Dato" (Celda) */
+    .tabla-animales td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f5f5f5;
+        font-size: 0.95rem;
+    }
+    .tabla-animales td:last-child { border-bottom: none; }
+
+    /* 5. Usar el data-label como título del dato */
+    .tabla-animales td::before {
+        content: attr(data-label); /* Toma el texto del HTML */
+        font-weight: 600;
+        color: #777;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+    }
+
+    /* AJUSTES ESPECÍFICOS */
+    
+    /* Checkbox: Lo ponemos grande arriba a la izquierda */
+    .td-check { 
+        position: absolute; top: 15px; right: 15px; 
+        width: auto !important; border: none !important; padding: 0 !important;
+    }
+    .td-check::before { content: none !important; } /* Sin etiqueta */
+    .td-check input { width: 20px; height: 20px; }
+
+    /* Caravana: La hacemos parecer un Título */
+    .td-caravana {
+        font-size: 1.2rem; margin-bottom: 10px; border-bottom: 2px solid #eee !important; padding-bottom: 10px !important;
+    }
+    .td-caravana::before { display: none; } /* Ocultar la palabra "Caravana" */
+
+    /* Acciones: Botón borrar grande abajo */
+    .td-actions { justify-content: flex-end; padding-top: 10px !important; }
+    .td-actions::before { display: none; }
+    .btn-delete-mini { font-size: 1.5rem; opacity: 1; color: #d32f2f; background: #ffebee; padding: 5px 10px; border-radius: 6px; }
 }
 
 /* MODALES */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000;
-}
-.modal-content {
-    background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+.modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 .form-row { margin-bottom: 15px; }
-.form-row label { display: block; margin-bottom: 5px; font-weight: 500; color: #555; font-size: 0.9rem;}
+.form-row label { display: block; margin-bottom: 5px; font-weight: 500; color: #555; }
 .modal-content input, .modal-content select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 .btn-confirm { background-color: #1976d2; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }

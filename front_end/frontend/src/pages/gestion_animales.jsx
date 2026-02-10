@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import Layout from '../components/layout'; // <--- IMPORTAMOS LAYOUT
+import Layout from '../components/layout';
 import api from '../api/axios_config';
 import './gestion_animales.css';
 
@@ -39,7 +39,6 @@ const GestionAnimales = () => {
         setTodosLosAnimales(resAnimales.data);
         setLotes(resLotes.data);
 
-        // Filtros por URL
         const params = new URLSearchParams(location.search);
         if (params.get('sin_lote') === 'true') {
             setFiltros(prev => ({ ...prev, lote_id: 'sin_lote' }));
@@ -73,7 +72,6 @@ const GestionAnimales = () => {
   const handleFiltroChange = (e) => setFiltros(prev => ({ ...prev, [e.target.name]: e.target.value }));
   const limpiarFiltros = () => { setFiltros({ caravana: '', categoria: '', lote_id: '' }); navigate(`/dashboard/${campo_id}/animales`); };
 
-  // SELECCIÓN MÚLTIPLE
   const handleSelectAll = () => {
     if (isAllSelected) setSelectedIds([]);
     else setSelectedIds(animales.map(a => a.id));
@@ -89,7 +87,6 @@ const GestionAnimales = () => {
     }
   };
 
-  // ACCIONES
   const handleMoverMasivo = async () => {
     if (destinoLoteId === "") return alert("Elegí un destino");
     try {
@@ -141,21 +138,17 @@ const GestionAnimales = () => {
   if (loading) return <Layout><div style={{padding:'20px'}}>Cargando hacienda... 🐄</div></Layout>;
 
   return (
-    <Layout> {/* <--- WRAPPER PRINCIPAL */}
+    <Layout>
         <div className="animales-container">
         
-        {/* HEADER: Lógica para cambiar entre Título y Barra de Selección */}
+        {/* HEADER */}
         <div className="dashboard-header">
             {selectedIds.length > 0 ? (
-                // BARRA DE SELECCIÓN (Cuando marcas checkboxes)
                 <div className="selection-toolbar-header">
                     <span className="selection-count">{selectedIds.length} seleccionados</span>
-                    <button className="btn-move" onClick={() => setShowMoveModal(true)}>
-                    🚚 Mover a Lote
-                    </button>
+                    <button className="btn-move" onClick={() => setShowMoveModal(true)}>🚚 Mover a Lote</button>
                 </div>
             ) : (
-                // TÍTULO NORMAL
                 <>
                     <div>
                         <h2>🐄 Stock Ganadero</h2>
@@ -167,9 +160,7 @@ const GestionAnimales = () => {
                     </div>
 
                     <div className="header-actions">
-                        <button className={`btn-filter ${mostrarFiltros ? 'active' : ''}`} onClick={() => setMostrarFiltros(!mostrarFiltros)}>
-                            🌪️ Filtros
-                        </button>
+                        <button className={`btn-filter ${mostrarFiltros ? 'active' : ''}`} onClick={() => setMostrarFiltros(!mostrarFiltros)}>🌪️ Filtros</button>
                         <button className="btn-excel" onClick={handleExportar}>📄 Excel</button>
                         <button className="btn-add-animal" onClick={() => setShowCreateModal(true)}>+ Alta</button>
                     </div>
@@ -177,7 +168,7 @@ const GestionAnimales = () => {
             )}
         </div>
 
-        {/* BARRA DE FILTROS DESPLEGABLE */}
+        {/* FILTROS */}
         {mostrarFiltros && (
             <div className="filter-bar">
                 <div className="filter-group">
@@ -202,14 +193,13 @@ const GestionAnimales = () => {
             </div>
         )}
 
-        {/* TABLA CON SCROLL HORIZONTAL (Responsive) */}
+        {/* --- TABLA PRINCIPAL --- */}
+        {/* Usamos data-label para que en celular sepa qué mostrar */}
         <div className="table-responsive">
             <table className="tabla-animales">
                 <thead>
                 <tr>
-                    <th style={{width: '40px'}}>
-                        <input type="checkbox" checked={isAllSelected} onChange={handleSelectAll}/>
-                    </th>
+                    <th style={{width: '40px'}}><input type="checkbox" checked={isAllSelected} onChange={handleSelectAll}/></th>
                     <th>Caravana</th>
                     <th>Categoría</th>
                     <th>Raza</th>
@@ -222,17 +212,30 @@ const GestionAnimales = () => {
                 {animales.length > 0 ? (
                     animales.map((anim) => (
                         <tr key={anim.id} className={selectedIds.includes(anim.id) ? 'row-selected' : ''}>
-                        <td><input type="checkbox" checked={selectedIds.includes(anim.id)} onChange={() => handleSelectOne(anim.id)}/></td>
-                        <td><strong>{anim.caravana}</strong></td>
-                        <td><span className={`badge ${getBadgeClass(anim.categoria)}`}>{anim.categoria}</span></td>
-                        <td>{anim.raza || '-'}</td>
-                        <td>{anim.peso} kg</td>
-                        <td>
-                            {anim.lote_id 
-                                ? lotes.find(l => l.id === anim.lote_id)?.name 
-                                : <span style={{color: '#d32f2f', fontWeight: 'bold'}}>⚠️ Sin Asignar</span>}
-                        </td>
-                        <td><button className="btn-delete-mini" onClick={() => handleEliminar(anim.id)}>🗑️</button></td>
+                            {/* CELDA CHECKBOX */}
+                            <td className="td-check">
+                                <input type="checkbox" checked={selectedIds.includes(anim.id)} onChange={() => handleSelectOne(anim.id)}/>
+                            </td>
+                            
+                            {/* DATOS CON LABEL PARA MÓVIL */}
+                            <td data-label="Caravana" className="td-caravana">
+                                <strong>{anim.caravana}</strong>
+                            </td>
+                            <td data-label="Categoría">
+                                <span className={`badge ${getBadgeClass(anim.categoria)}`}>{anim.categoria}</span>
+                            </td>
+                            <td data-label="Raza">{anim.raza || '-'}</td>
+                            <td data-label="Peso">{anim.peso ? `${anim.peso} kg` : '-'}</td>
+                            <td data-label="Ubicación">
+                                {anim.lote_id 
+                                    ? lotes.find(l => l.id === anim.lote_id)?.name 
+                                    : <span style={{color: '#d32f2f', fontWeight: 'bold'}}>⚠️ Sin Asignar</span>}
+                            </td>
+                            
+                            {/* ACCIONES */}
+                            <td data-label="Acciones" className="td-actions">
+                                <button className="btn-delete-mini" onClick={() => handleEliminar(anim.id)}>🗑️</button>
+                            </td>
                         </tr>
                     ))
                 ) : (
@@ -242,7 +245,7 @@ const GestionAnimales = () => {
             </table>
         </div>
 
-        {/* MODALES */}
+        {/* MODALES IGUAL QUE ANTES */}
         {showMoveModal && (
             <div className="modal-overlay">
             <div className="modal-content">
@@ -265,23 +268,17 @@ const GestionAnimales = () => {
                 <div className="modal-content">
                     <h3>Alta de Hacienda 🐄</h3>
                     <form onSubmit={handleCrear}>
-                        <div className="form-row">
-                            <label>Caravana / ID</label>
-                            <input type="text" value={nuevoAnimal.caravana} onChange={e=>setNuevoAnimal({...nuevoAnimal, caravana:e.target.value})} required />
-                        </div>
-                        <div className="form-row">
-                            <label>Categoría</label>
+                        <div className="form-row"><label>Caravana</label><input type="text" value={nuevoAnimal.caravana} onChange={e=>setNuevoAnimal({...nuevoAnimal, caravana:e.target.value})} required /></div>
+                        <div className="form-row"><label>Categoría</label>
                             <select value={nuevoAnimal.categoria} onChange={e=>setNuevoAnimal({...nuevoAnimal, categoria:e.target.value})}>
                                 <option>Vaca</option><option>Toro</option><option>Novillo</option><option>Ternero</option><option>Vaquillona</option>
                             </select>
                         </div>
                         <div className="form-row"><label>Raza</label><input type="text" value={nuevoAnimal.raza} onChange={e=>setNuevoAnimal({...nuevoAnimal, raza:e.target.value})} /></div>
                         <div className="form-row"><label>Peso (Kg)</label><input type="number" value={nuevoAnimal.peso} onChange={e=>setNuevoAnimal({...nuevoAnimal, peso:e.target.value})} /></div>
-                        <div className="form-row">
-                            <label>Lote Inicial</label>
+                        <div className="form-row"><label>Lote Inicial</label>
                             <select value={nuevoAnimal.lote_id} onChange={e=>setNuevoAnimal({...nuevoAnimal, lote_id:e.target.value})}>
-                                <option value="">-- Sin Lote --</option>
-                                {lotes.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+                                <option value="">-- Sin Lote --</option>{lotes.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
                             </select>
                         </div>
                         <div className="modal-actions">
