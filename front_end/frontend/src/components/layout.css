@@ -1,136 +1,156 @@
-/* Estilos generales del Layout */
+/* src/components/Layout.css */
+
+/* Contenedor principal: Ocupa toda la pantalla */
 .layout-container {
-    display: flex;
-    min-height: 100vh;
-    position: relative;
-    background-color: #f4f6f8; /* Color de fondo suave */
-  }
-  
-  /* --- SIDEBAR (PC) --- */
-  .sidebar {
-    width: 250px;
-    background-color: white;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    display: flex; /* Pone el Sidebar y el Main uno al lado del otro */
     height: 100vh;
-    position: fixed; /* Fijo a la izquierda */
-    left: 0;
-    top: 0;
-    z-index: 1000;
+    width: 100vw;
+    overflow: hidden; /* Evita scrolls dobles */
+    background-color: #f4f6f8;
+}
+
+/* --- SIDEBAR (PC) --- */
+.sidebar {
+    width: 260px; /* Ancho fijo */
+    background-color: white;
+    border-right: 1px solid #e0e0e0;
     display: flex;
     flex-direction: column;
-    padding: 1rem;
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .sidebar-header h3 {
-    color: #2c3e50;
+    padding: 20px;
+    /* Flex-shrink 0 evita que el menú se aplaste si falta espacio */
+    flex-shrink: 0; 
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.sidebar-header h3 {
+    color: #1b5e20; /* Un verde más "campo" */
+    font-size: 1.5rem;
     margin-bottom: 2rem;
-  }
-  
-  /* Items del menú */
-  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Items del menú */
+.menu-item {
     display: flex;
     align-items: center;
     padding: 12px 15px;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     border-radius: 8px;
     cursor: pointer;
-    color: #555;
+    color: #546e7a;
     font-weight: 500;
     transition: all 0.2s;
-  }
-  
-  .menu-item:hover {
-    background-color: #e8f5e9;
+}
+
+.menu-item:hover {
+    background-color: #f1f8e9;
     color: #2e7d32;
-  }
-  
-  .menu-item.active {
-    background-color: #e3f2fd;
-    color: #1976d2;
-    border-left: 4px solid #1976d2;
-  }
-  
-  .menu-item .icon {
+}
+
+.menu-item.active {
+    background-color: #e8f5e9;
+    color: #1b5e20;
+    font-weight: bold;
+}
+
+.menu-item .icon {
     margin-right: 12px;
     font-size: 1.2rem;
-  }
-  
-  /* Botones que solo se ven en móvil */
-  .menu-toggle, .close-menu {
-    display: none; 
-  }
+}
 
-  .sidebar-footer {
-      margin-top: auto;
-  }
-  
-  /* --- CONTENIDO PRINCIPAL --- */
-  .main-content {
-    margin-left: 250px; /* Deja espacio para el menú */
-    width: calc(100% - 250px);
-    padding: 2rem;
-  }
-  
-  /* =========================================
-     MÓVIL (Pantallas menores a 768px)
-     ========================================= */
-  @media (max-width: 768px) {
+.sidebar-footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-logout {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+/* Botones ocultos en PC */
+.menu-toggle, .close-menu { display: none; }
+
+/* --- CONTENIDO PRINCIPAL --- */
+.main-content {
+    flex-grow: 1; /* Ocupa TODO el espacio restante */
+    overflow-y: auto; /* El scroll va DENTRO del contenido, no en toda la página */
+    padding: 30px; /* Espacio interno generoso */
+    background-color: #f8fafc;
+}
+
+/* =========================================
+   MÓVIL (Pantallas menores a 768px)
+   ========================================= */
+@media (max-width: 768px) {
     
-    /* 1. Sidebar escondido por defecto */
-    .sidebar {
-      transform: translateX(-100%); /* Lo sacamos de la pantalla a la izquierda */
-    }
-  
-    /* 2. Sidebar abierto */
-    .sidebar.open {
-      transform: translateX(0); /* Lo traemos de vuelta */
-    }
-  
-    /* 3. Botón Hamburguesa visible */
-    .menu-toggle {
-      display: block;
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 999;
-      background: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-  
-    /* 4. Botón cerrar dentro del menú */
-    .close-menu {
-      display: block;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      cursor: pointer;
-    }
-  
-    /* 5. Contenido ocupa el 100% */
-    .main-content {
-      margin-left: 0;
-      width: 100%;
-      padding: 1rem;
-      padding-top: 4rem; /* Espacio para el botón hamburguesa */
+    .layout-container {
+        flex-direction: column; /* Cambia dirección para permitir overlay */
     }
 
-    /* Fondo oscuro al abrir menú */
+    /* El Sidebar ahora flota sobre el contenido */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        transform: translateX(-100%); /* Escondido a la izquierda */
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .sidebar.open {
+        transform: translateX(0); /* Aparece */
+    }
+
+    /* Botón Hamburguesa */
+    .menu-toggle {
+        display: block;
+        position: fixed; /* Flotante siempre visible */
+        top: 15px;
+        left: 15px;
+        z-index: 999;
+        background: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        font-size: 1.5rem;
+    }
+
+    .close-menu {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        cursor: pointer;
+    }
+
+    /* El contenido ocupa todo el ancho en móvil */
+    .main-content {
+        width: 100%;
+        padding: 15px;
+        padding-top: 70px; /* Espacio para no quedar tapado por el botón menú */
+    }
+
     .overlay {
         position: fixed;
         top: 0;
         left: 0;
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+        height: 100%;
         background: rgba(0,0,0,0.5);
-        z-index: 999;
+        z-index: 900;
     }
-  }
+}
