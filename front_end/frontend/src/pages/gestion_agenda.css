@@ -1,78 +1,143 @@
+/* CONTAINER GENERAL */
 .agenda-container {
-    padding: 20px;
     max-width: 1100px;
     margin: 0 auto;
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* HEADER */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.dashboard-header h2 { margin: 0; color: #111; font-size: 1.5rem; }
+.subtitle { margin: 5px 0 0 0; color: #666; font-size: 0.9rem; }
+
+/* BOTÓN PRINCIPAL */
+.btn-primary {
+    background-color: #673ab7; /* Violeta Agenda */
+    color: white; border: none; padding: 10px 20px;
+    border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+    transition: background 0.2s;
+}
+.btn-primary:hover { background-color: #5e35b1; }
+
+/* GRID PRINCIPAL (PC: 2 columnas) */
+.agenda-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Dividimos: Calendario a la izq, Lista a la der */
+    grid-template-columns: 1.5fr 1fr; /* Calendario más ancho que la lista */
     gap: 30px;
+    align-items: start;
 }
 
-@media (max-width: 768px) {
-    .agenda-container { grid-template-columns: 1fr; }
+/* TARJETA CALENDARIO */
+.calendar-card {
+    background: white; padding: 20px; border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee;
 }
 
-/* CALENDARIO PERSONALIZADO */
-.react-calendar {
-    width: 100%;
-    background: white;
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    font-family: inherit;
-    padding: 10px;
+/* Estilos internos de React-Calendar */
+.react-calendar { width: 100%; border: none; font-family: inherit; }
+.react-calendar__tile { height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 10px; }
+.react-calendar__tile--now { background: #ede7f6; border-radius: 8px; color: #673ab7; }
+.react-calendar__tile--active { background: #673ab7 !important; color: white !important; border-radius: 8px; }
+.react-calendar__month-view__days__day--weekend { color: #d32f2f; }
+
+/* Puntito de evento */
+.event-dot {
+    width: 6px; height: 6px; background-color: #ff9800; border-radius: 50%; margin-top: 4px;
 }
 
-.react-calendar__tile {
-    height: 60px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding-top: 5px;
+
+/* TARJETA LISTA DE EVENTOS */
+.events-card {
+    background: white; padding: 25px; border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee;
+    min-height: 400px; display: flex; flex-direction: column;
 }
 
-.react-calendar__tile--now { background: #e3f2fd; border-radius: 8px; }
-.react-calendar__tile--active { background: #1565c0 !important; color: white; border-radius: 8px; }
-
-/* Puntito indicador de evento */
-.event-indicator {
-    width: 6px;
-    height: 6px;
-    background-color: #ff9800;
-    border-radius: 50%;
-    margin-top: 2px;
+.events-header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 15px;
 }
+.events-header h3 { margin: 0; text-transform: capitalize; color: #333; font-size: 1.1rem; }
+.task-count { font-size: 0.8rem; background: #eee; padding: 2px 8px; border-radius: 10px; color: #555; }
 
-/* LISTA DE EVENTOS */
-.agenda-sidebar {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    height: fit-content;
+/* Lista Vacía */
+.empty-day {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #999; text-align: center;
 }
+.empty-day span { font-size: 2rem; margin-bottom: 10px; }
+.btn-small-add { margin-top: 10px; background: none; border: 1px solid #673ab7; color: #673ab7; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
 
+/* Item de Evento */
 .event-item {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    gap: 10px;
+    display: flex; align-items: flex-start; gap: 12px; padding: 12px;
+    border-bottom: 1px solid #f9f9f9; transition: background 0.2s;
+}
+.event-item:last-child { border-bottom: none; }
+.event-item:hover { background-color: #fbfbfb; }
+
+.event-check { margin-top: 4px; cursor: pointer; width: 18px; height: 18px; accent-color: #673ab7; }
+
+/* Estado Completado */
+.event-item.completed .event-top h4 { text-decoration: line-through; color: #aaa; }
+.event-item.completed { opacity: 0.7; }
+
+.event-info { flex: 1; }
+.event-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.event-top h4 { margin: 0; font-size: 0.95rem; color: #333; }
+
+.tag-tipo { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
+.Sanidad { background: #ffebee; color: #c62828; }
+.Manejo { background: #e8f5e9; color: #2e7d32; }
+.Venta { background: #fff3e0; color: #ef6c00; }
+.Administrativo { background: #e3f2fd; color: #1565c0; }
+
+.event-desc { margin: 0; font-size: 0.85rem; color: #666; line-height: 1.4; }
+
+.btn-delete-event {
+    background: none; border: none; cursor: pointer; opacity: 0.3; font-size: 1.1rem;
+}
+.btn-delete-event:hover { opacity: 1; }
+
+
+/* --- MÓVIL (< 768px) --- */
+@media (max-width: 768px) {
+    .agenda-container { padding: 1rem; width: 100%; box-sizing: border-box; }
+    
+    .dashboard-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .header-actions { width: 100%; }
+    .btn-primary { width: 100%; }
+
+    /* Apilar columnas */
+    .agenda-grid { grid-template-columns: 1fr; gap: 20px; }
+    
+    /* Calendario más compacto en móvil */
+    .react-calendar__tile { height: 50px; }
 }
 
-.event-item.completed h4 { text-decoration: line-through; color: #999; }
-
-.event-check {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
+/* MODAL */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000;
 }
-
-.event-details { flex: 1; }
-.event-details h4 { margin: 0; font-size: 1rem; color: #333; }
-.event-details p { margin: 2px 0 0; font-size: 0.85rem; color: #666; }
-
-.badge-tipo { padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; color: white; background: #999; }
-.tipo-Sanidad { background: #e53935; }
-.tipo-Manejo { background: #43a047; }
-.tipo-Venta { background: #fb8c00; }
+.modal-content {
+    background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.form-row { margin-bottom: 15px; }
+.form-row label { display: block; margin-bottom: 5px; font-weight: 500; color: #555; font-size: 0.9rem; }
+.modal-content input, .modal-content select, .modal-content textarea { 
+    width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: inherit;
+}
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.btn-confirm { background-color: #673ab7; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
