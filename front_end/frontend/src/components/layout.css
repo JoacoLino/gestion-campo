@@ -1,58 +1,56 @@
-/* --- ESTILO BASE (PC / ESCRITORIO) --- */
-.layout-container {
-    display: flex;
+/* =======================================================
+   VERSION PC (Escritorio > 768px)
+   Aquí el Layout es "invisible", solo pone el menú a la izquierda.
+   ======================================================= */
+
+.layout-wrapper {
     min-height: 100vh;
-    background-color: #f8f9fa; /* Fondo general suave */
-    position: relative;
+    background-color: #f8f9fa; /* Fondo gris muy suave */
 }
 
-/* SIDEBAR: Fijo a la izquierda, ancho 250px */
+/* SIDEBAR: Fijo y visible siempre */
 .sidebar {
     width: 250px;
     height: 100vh;
     background: white;
-    border-right: 1px solid #e0e0e0;
-    position: fixed; /* Clave: Se queda quieto al scrollear */
+    border-right: 1px solid #eee;
+    position: fixed; /* Se queda pegado a la izquierda */
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 100;
     display: flex;
     flex-direction: column;
     padding: 20px;
-    transition: transform 0.3s ease; /* Animación suave para móvil */
+    transition: transform 0.3s ease; /* Solo para animación móvil */
 }
 
-/* CONTENIDO PRINCIPAL: Deja espacio para el menú */
-.main-content {
-    margin-left: 250px; /* IMPORTANTE: Deja el hueco exacto del menú */
-    width: calc(100% - 250px); /* Ocupa el resto */
-    min-height: 100vh;
-    box-sizing: border-box;
+/* CONTENIDO: Solo le damos margen para que no choque con el menú */
+.layout-content {
+    margin-left: 250px; /* Exactamente el ancho del menú */
+    width: calc(100% - 250px); /* El resto del ancho */
+    padding: 0; /* Sin padding extra, lo maneja tu Resumen.css */
 }
 
-/* Estilos visuales del menú */
-.sidebar-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-.sidebar-header h3 { color: #2e7d32; margin: 0; font-size: 1.2rem; }
-.close-menu { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+/* Elementos ocultos en PC (Para que no molesten tu diseño) */
+.mobile-toggle { display: none; }
+.close-menu { display: none; }
+.overlay { display: none; }
 
+/* Estilos visuales del menú (Cosmética) */
+.sidebar-header h3 { margin: 0 0 30px 0; color: #2e7d32; }
 .nav-item {
-    padding: 12px 15px; margin-bottom: 5px; border-radius: 8px;
-    cursor: pointer; color: #555; display: flex; align-items: center; gap: 10px;
-    transition: background 0.2s;
-    font-weight: 500;
+    padding: 12px; margin-bottom: 5px; border-radius: 8px; cursor: pointer;
+    color: #555; display: flex; align-items: center; gap: 10px; font-weight: 500;
 }
 .nav-item:hover { background-color: #e8f5e9; color: #1b5e20; }
 .nav-item.active { background-color: #c8e6c9; color: #1b5e20; font-weight: bold; }
-.nav-item .icon { font-size: 1.2rem; }
-
-.btn-back { margin-top: auto; padding: 10px; background: #f1f1f1; border: none; border-radius: 6px; cursor: pointer; width: 100%; color: #666; font-weight: 500; transition: 0.2s; }
-.btn-back:hover { background: #e0e0e0; color: #333; }
-
-/* En PC ocultamos el botón hamburguesa */
-.mobile-toggle { display: none; }
+.btn-back { margin-top: auto; padding: 10px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 5px; }
 
 
-/* --- ESTILO MÓVIL (Celular < 768px) --- */
+/* =======================================================
+   VERSION MÓVIL (Celular < 768px)
+   Aquí activamos el "Modo Layout" real.
+   ======================================================= */
 @media (max-width: 768px) {
     
     /* 1. Botón Hamburguesa VISIBLE */
@@ -61,33 +59,36 @@
         position: fixed; top: 15px; left: 15px; z-index: 2000;
         background: #2e7d32; color: white; border: none;
         padding: 8px 12px; border-radius: 6px; font-size: 1.5rem;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
 
-    /* 2. Sidebar ESCONDIDO (fuera de pantalla a la izquierda) */
+    /* 2. Menú ESCONDIDO (Fuera de la pantalla) */
     .sidebar {
-        transform: translateX(-100%);
+        transform: translateX(-100%); /* Lo sacamos a la izquierda */
+        width: 80%; /* Que no ocupe toda la pantalla */
+        max-width: 300px;
         box-shadow: 2px 0 10px rgba(0,0,0,0.2);
     }
 
-    /* 3. Sidebar ABIERTO (entra a la pantalla) */
+    /* 3. Menú ABIERTO (Entra) */
     .sidebar.open {
         transform: translateX(0);
     }
-    
-    .close-menu { display: block; } /* Mostrar la X para cerrar */
 
-    /* 4. Contenido ocupa TODO el ancho (ya no hay margen) */
-    .main-content {
-        margin-left: 0;
-        width: 100%;
+    /* 4. Contenido ocupa TODO el ancho */
+    .layout-content {
+        margin-left: 0 !important; /* Quitamos el margen de PC */
+        width: 100% !important;
         padding-top: 60px; /* Espacio arriba para el botón hamburguesa */
     }
 
-    /* Fondo oscuro al abrir menú */
+    .close-menu {
+        display: block; position: absolute; top: 15px; right: 15px;
+        background: none; border: none; font-size: 2rem; cursor: pointer;
+    }
+
     .overlay {
-        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        background: rgba(0,0,0,0.5); z-index: 900;
+        display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.5); z-index: 90;
     }
 }
