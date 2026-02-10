@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios_config';
 import './resumen.css';
-import Layout from '../components/layout'; // Importa el nuevo
 
 // --- IMPORTAMOS LOS GRÁFICOS (Agregamos BarChart y sus amigos) ---
 import { 
@@ -113,7 +112,6 @@ const Resumen = () => {
   if (loading) return <div className="loading-screen">Calculando índices productivos... 📊</div>;
 
   return (
-    <Layout>
     <div className="resumen-container">
       
       {/* HEADER */}
@@ -123,7 +121,7 @@ const Resumen = () => {
           <p className="subtitle">Visión general del establecimiento</p>
         </div>
         
-        <div className="header-actions"> 
+        <div style={{display: 'flex', gap: '15px', alignItems: 'center'}}>
             <div className="weather-widget">
                 <span className="weather-icon">{clima.icon || '⏳'}</span>
                 <div className="weather-info">
@@ -238,7 +236,6 @@ const Resumen = () => {
         </div>
       </div>
     </div>
-    </Layout>
   );
 };
 

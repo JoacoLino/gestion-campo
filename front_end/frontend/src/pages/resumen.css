@@ -1,109 +1,148 @@
-/* src/pages/resumen.css */
+/* =======================================================
+   ESTILO BASE (PC / ESCRITORIO) 💻
+   Se aplica siempre, a menos que una regla móvil lo pise.
+   ======================================================= */
 
 .resumen-container {
-    max-width: 1400px; /* Evita que se estire demasiado en monitores gigantes */
+    padding: 30px;
+    max-width: 1400px; /* Que no se estire infinito en monitores 4k */
     margin: 0 auto;
+    background-color: #f8f9fa; /* Fondo suave */
+    min-height: 100vh;
 }
 
-/* HEADER: Horizontal en PC */
+/* HEADER: Horizontal y espacioso */
 .dashboard-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end; /* Alinea abajo para que quede prolijo */
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e2e8f0;
+    align-items: center; /* Centrado verticalmente */
+    margin-bottom: 40px;
 }
 
 .header-actions {
     display: flex;
-    gap: 15px;
+    gap: 20px;
+    align-items: center;
 }
 
-/* KPI CARDS: 3 Columnas Fijas en PC */
+/* TARJETAS KPI (Números): 3 Columnas Estrictas */
 .kpi-grid {
     display: grid;
-    /* TRES COLUMNAS IGUALES: Esto fuerza la horizontalidad */
-    grid-template-columns: 1fr 1fr 1fr; 
-    gap: 25px;
-    margin-bottom: 30px;
+    /* MÁGICA DE PC: 3 columnas iguales */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 30px; /* Espacio generoso entre tarjetas */
+    margin-bottom: 40px;
 }
 
 .kpi-card {
     background: white;
-    padding: 25px;
+    padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-    border: 1px solid #edf2f7;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Sombra elegante */
+    text-align: center;
+    border-top: 5px solid #ccc;
     transition: transform 0.2s;
-    text-align: center; /* Centrar contenido de la tarjeta */
 }
 
 .kpi-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+    transform: translateY(-5px); /* Efecto de levitar al pasar el mouse */
 }
+
+.card-blue { border-top-color: #3498db; }
+.card-green { border-top-color: #2ecc71; }
+.card-orange { border-top-color: #e67e22; }
 
 .kpi-number {
-    font-size: 3.5rem; /* Número grande */
-    font-weight: 700;
-    margin: 10px 0;
-    color: #2d3748;
+    font-size: 3.5rem; /* Número bien grande en PC */
+    font-weight: 800;
+    margin: 15px 0;
+    color: #2c3e50;
 }
 
-/* GRÁFICOS: 2 Columnas Fijas en PC */
+/* GRÁFICOS: 2 Columnas Estrictas (Mitad y Mitad) */
 .charts-grid {
     display: grid;
-    /* DOS COLUMNAS IGUALES: Gráficos lado a lado */
     grid-template-columns: 1fr 1fr; 
-    gap: 25px;
+    gap: 30px;
 }
 
 .chart-card {
     background: white;
-    padding: 20px;
+    padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-    border: 1px solid #edf2f7;
-    height: 400px; /* Altura fija para uniformidad */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    height: 400px; /* Altura fija para que queden parejos */
     display: flex;
     flex-direction: column;
 }
 
-.chart-card h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #4a5568;
-    font-size: 1.1rem;
+/* Estilos de botones y clima (igual que antes) */
+.weather-widget {
+    background: white; padding: 10px 20px; border-radius: 30px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-/* =========================================
-   MÓVIL (Pantallas chicas)
-   ========================================= */
-@media (max-width: 900px) { /* Punto de quiebre para tablets/celulares */
+.btn-reporte {
+    background-color: #27ae60; color: white; border: none;
+    padding: 10px 25px; border-radius: 30px; font-weight: bold; cursor: pointer;
+}
+
+
+/* =======================================================
+   ESTILO MÓVIL (CELULAR) 📱
+   Solo se activa si la pantalla mide menos de 768px.
+   ======================================================= */
+@media (max-width: 768px) {
     
+    .resumen-container {
+        padding: 15px; /* Menos borde para aprovechar espacio */
+    }
+
+    /* HEADER: Cambia a vertical */
     .dashboard-header {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: column; /* Uno abajo del otro */
+        align-items: flex-start; /* Alineado a la izquierda */
         gap: 15px;
     }
-    
+
     .header-actions {
         width: 100%;
-        justify-content: space-between;
+        justify-content: space-between; /* Clima a un lado, botón al otro */
     }
 
-    /* Transformar todo a 1 sola columna vertical */
+    /* KPI: Cambia a 1 sola columna (filas) */
     .kpi-grid {
-        grid-template-columns: 1fr; /* Una debajo de la otra */
+        grid-template-columns: 1fr; /* Una sola columna */
+        gap: 15px;
     }
 
-    .charts-grid {
-        grid-template-columns: 1fr; /* Una debajo de la otra */
+    .kpi-card {
+        padding: 20px; /* Tarjetas más compactas */
+        display: flex; /* Flex para poner número al lado del título si querés */
+        flex-direction: row; /* Horizontal en móvil para ahorrar altura */
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
     }
-    
+
+    .kpi-number {
+        font-size: 2rem; /* Número más chico */
+        margin: 0;
+    }
+
+    .kpi-card h3 {
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    /* GRÁFICOS: Cambia a 1 sola columna */
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
     .chart-card {
-        height: auto; /* Altura automática en móvil */
-        min-height: 350px;
+        height: auto; /* Altura libre */
+        min-height: 300px;
     }
 }
