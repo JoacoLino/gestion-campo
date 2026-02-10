@@ -1,94 +1,126 @@
 /* =======================================================
    VERSION PC (Escritorio > 768px)
-   Aquí el Layout es "invisible", solo pone el menú a la izquierda.
    ======================================================= */
 
 .layout-wrapper {
     min-height: 100vh;
-    background-color: #f8f9fa; /* Fondo gris muy suave */
+    background-color: #f8f9fa;
 }
 
-/* SIDEBAR: Fijo y visible siempre */
+/* En PC ocultamos la barra móvil nueva */
+.mobile-navbar { display: none; }
+
+/* SIDEBAR FIJO */
 .sidebar {
     width: 250px;
     height: 100vh;
     background: white;
-    border-right: 1px solid #eee;
-    position: fixed; /* Se queda pegado a la izquierda */
-    top: 0;
-    left: 0;
+    border-right: 1px solid #e0e0e0;
+    position: fixed;
+    top: 0; left: 0;
     z-index: 100;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    transition: transform 0.3s ease; /* Solo para animación móvil */
+    display: flex; flex-direction: column; padding: 20px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Animación fluida */
 }
 
-/* CONTENIDO: Solo le damos margen para que no choque con el menú */
+/* CONTENIDO */
 .layout-content {
-    margin-left: 250px; /* Exactamente el ancho del menú */
-    width: calc(100% - 250px); /* El resto del ancho */
-    padding: 0; /* Sin padding extra, lo maneja tu Resumen.css */
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    padding: 0;
 }
 
-/* Elementos ocultos en PC (Para que no molesten tu diseño) */
-.mobile-toggle { display: none; }
-.close-menu { display: none; }
-.overlay { display: none; }
+.overlay { display: none; } /* Oculto en PC */
 
-/* Estilos visuales del menú (Cosmética) */
-.sidebar-header h3 { margin: 0 0 30px 0; color: #2e7d32; }
+/* Estilos Menú */
+.sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.sidebar-header h3 { margin: 0; color: #2e7d32; font-size: 1.2rem; }
+.close-menu { display: none; } /* La X oculta en PC */
+
 .nav-item {
-    padding: 12px; margin-bottom: 5px; border-radius: 8px; cursor: pointer;
-    color: #555; display: flex; align-items: center; gap: 10px; font-weight: 500;
+    padding: 12px 15px; margin-bottom: 5px; border-radius: 8px; cursor: pointer;
+    color: #555; display: flex; align-items: center; gap: 12px; font-weight: 500;
+    transition: all 0.2s;
 }
 .nav-item:hover { background-color: #e8f5e9; color: #1b5e20; }
 .nav-item.active { background-color: #c8e6c9; color: #1b5e20; font-weight: bold; }
-.btn-back { margin-top: auto; padding: 10px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 5px; }
+.btn-back { margin-top: auto; padding: 12px; border: 1px solid #ddd; background: #fafafa; cursor: pointer; border-radius: 8px; color: #666; font-weight: 500; }
+.btn-back:hover { background: #eee; color: #333; }
 
 
 /* =======================================================
    VERSION MÓVIL (Celular < 768px)
-   Aquí activamos el "Modo Layout" real.
    ======================================================= */
 @media (max-width: 768px) {
     
-    /* 1. Botón Hamburguesa VISIBLE */
+    /* 1. NAVBAR SUPERIOR FIJO */
+    .mobile-navbar {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        position: fixed; /* Se queda pegada arriba */
+        top: 0; left: 0; width: 100%;
+        height: 60px; /* Altura de la barra */
+        background: white;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 0 15px;
+        z-index: 900; /* Por encima del contenido, debajo del menú */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        box-sizing: border-box;
+    }
+
     .mobile-toggle {
-        display: block;
-        position: fixed; top: 15px; left: 15px; z-index: 2000;
-        background: #2e7d32; color: white; border: none;
-        padding: 8px 12px; border-radius: 6px; font-size: 1.5rem;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        background: none; border: none; font-size: 1.5rem; color: #333;
+        cursor: pointer; padding: 5px; display: flex; align-items: center;
     }
 
-    /* 2. Menú ESCONDIDO (Fuera de la pantalla) */
+    .mobile-logo {
+        font-weight: bold; color: #2e7d32; font-size: 1.1rem;
+    }
+
+    /* 2. SIDEBAR (DRAWER) */
     .sidebar {
-        transform: translateX(-100%); /* Lo sacamos a la izquierda */
-        width: 80%; /* Que no ocupe toda la pantalla */
-        max-width: 300px;
-        box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+        position: fixed; top: 0; left: 0; height: 100%;
+        width: 280px; /* Ancho cómodo para el dedo */
+        max-width: 80%;
+        transform: translateX(-100%); /* Escondido a la izquierda */
+        z-index: 1000; /* Por encima de todo */
+        box-shadow: none;
     }
 
-    /* 3. Menú ABIERTO (Entra) */
     .sidebar.open {
-        transform: translateX(0);
+        transform: translateX(0); /* Entra suavemente */
+        box-shadow: 5px 0 15px rgba(0,0,0,0.2); /* Sombra al abrirse */
     }
 
-    /* 4. Contenido ocupa TODO el ancho */
-    .layout-content {
-        margin-left: 0 !important; /* Quitamos el margen de PC */
-        width: 100% !important;
-        padding-top: 60px; /* Espacio arriba para el botón hamburguesa */
-    }
-
+    /* Botón cerrar dentro del menú */
     .close-menu {
-        display: block; position: absolute; top: 15px; right: 15px;
-        background: none; border: none; font-size: 2rem; cursor: pointer;
+        display: block;
+        background: none; border: none; font-size: 1.5rem; color: #666; cursor: pointer;
     }
 
+    /* 3. CONTENIDO PRINCIPAL */
+    .layout-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        /* IMPORTANTE: Empujamos el contenido hacia abajo para que la barra no lo tape */
+        padding-top: 60px; 
+    }
+
+    /* 4. FONDO OSCURO (OVERLAY) */
     .overlay {
-        display: block; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        background: rgba(0,0,0,0.5); z-index: 90;
+        display: block;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 950; /* Entre la navbar y el sidebar */
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s;
+        backdrop-filter: blur(2px); /* Efecto borroso moderno */
+    }
+
+    .overlay.show {
+        opacity: 1;
+        visibility: visible;
     }
 }

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import './layout.css';
+import './Layout.css';
 
 const Layout = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false); // Solo se usa en móvil
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { campo_id } = useParams(); 
@@ -22,17 +22,20 @@ const Layout = ({ children }) => {
   return (
     <div className="layout-wrapper">
       
-      {/* 1. BOTÓN HAMBURGUESA (CSS lo oculta en PC) */}
-      <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
-        ☰
-      </button>
+      {/* 1. NAVBAR MÓVIL (NUEVO) */}
+      {/* Solo visible en pantallas chicas */}
+      <header className="mobile-navbar">
+        <button className="mobile-toggle" onClick={() => setIsOpen(true)}>
+          ☰
+        </button>
+        <span className="mobile-logo">🌾 Mi Campo SaaS</span>
+      </header>
 
-      {/* 2. SIDEBAR (El menú de siempre) */}
+      {/* 2. SIDEBAR (Menú Lateral) */}
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <h3>🌾 Mi Campo SaaS</h3>
-          {/* Botón X solo visible en móvil */}
-          <button className="close-menu" onClick={() => setIsOpen(false)}>×</button>
+          <button className="close-menu" onClick={() => setIsOpen(false)}>✕</button>
         </div>
 
         <nav className="sidebar-nav">
@@ -42,7 +45,7 @@ const Layout = ({ children }) => {
               className={`nav-item ${isActive(item.path)}`}
               onClick={() => {
                 navigate(item.path);
-                setIsOpen(false); // Cierra menú al tocar (móvil)
+                setIsOpen(false); 
               }}
             >
               <span className="icon">{item.icon}</span>
@@ -58,11 +61,10 @@ const Layout = ({ children }) => {
         </div>
       </aside>
 
-      {/* 3. TU CONTENIDO ORIGINAL (Resumen) */}
-      {/* En PC, esto simplemente se pinta a la derecha del menú */}
+      {/* 3. CONTENIDO PRINCIPAL */}
       <main className="layout-content">
-        {/* Sombra oscura solo en móvil */}
-        {isOpen && <div className="overlay" onClick={() => setIsOpen(false)}></div>}
+        {/* Fondo oscuro al abrir menú */}
+        <div className={`overlay ${isOpen ? 'show' : ''}`} onClick={() => setIsOpen(false)}></div>
         
         {children}
       </main>
