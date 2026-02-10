@@ -1,123 +1,114 @@
-.lotes-container {
-    padding: 10px;
+/* CONTAINER GENERAL */
+.insumos-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.header-actions {
+/* HEADER */
+.dashboard-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 15px;
 }
+.dashboard-header h2 { margin: 0; color: #111; font-size: 1.5rem; }
+.subtitle { margin: 5px 0 0 0; color: #666; font-size: 0.9rem; }
 
-/* --- CAMBIO: VOLVEMOS AL AZUL --- */
+/* BOTONES */
 .btn-primary {
-    background-color: #1976d2; /* Azul (igual a Animales) */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
+    background-color: #ff9800; /* Naranja Insumos */
+    color: white; border: none; padding: 10px 20px;
+    border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+    transition: background 0.2s;
 }
-.btn-primary:hover {
-    background-color: #1565c0;
-}
+.btn-primary:hover { background-color: #f57c00; }
 
-.lotes-grid {
+/* GRID TARJETAS */
+.insumos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 20px;
 }
 
-.lote-card {
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+.insumo-card {
+    background: white; border: 1px solid #e0e0e0; border-radius: 12px;
+    padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    border-left: 5px solid #ff9800; /* Borde Naranja */
+    display: flex; flex-direction: column;
     transition: transform 0.2s;
-    /* --- CAMBIO: BORDE AZUL --- */
-    border-left: 5px solid #1976d2; 
+}
+.insumo-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+
+/* DETALLES DE TARJETA */
+.card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 15px; border-bottom: 1px solid #f5f5f5; padding-bottom: 8px;
+}
+.card-header h3 { margin: 0; font-size: 1.1rem; color: #333; }
+
+.btn-delete-mini { background: none; border: none; color: #ccc; font-size: 1.5rem; cursor: pointer; line-height: 0.5; }
+.btn-delete-mini:hover { color: #e53935; }
+
+.card-body { flex: 1; }
+
+.dato { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+.dato-stock { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; background: #fff3e0; padding: 8px; border-radius: 6px; }
+
+.label { color: #666; }
+.valor-cat { font-weight: 500; color: #333; }
+.valor-stock { font-weight: 700; color: #333; font-size: 1.1rem; }
+
+/* Stock crítico (Rojo) */
+.valor-stock.critical { color: #d32f2f; }
+
+/* FOOTER (Botones + / -) */
+.card-footer {
+    margin-top: 15px; display: flex; justify-content: center; align-items: center; gap: 10px;
 }
 
-.lote-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+.btn-adjust {
+    width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer;
+    font-weight: bold; font-size: 1.2rem; display: flex; justify-content: center; align-items: center;
+    transition: 0.1s;
+}
+.minus { background-color: #ffe0b2; color: #e65100; }
+.minus:active { background-color: #ffcc80; }
+
+.plus { background-color: #c8e6c9; color: #2e7d32; }
+.plus:active { background-color: #a5d6a7; }
+
+.adjust-label { font-size: 0.75rem; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* --- MÓVIL (< 768px) --- */
+@media (max-width: 768px) {
+    .insumos-container { padding: 1rem; width: 100%; box-sizing: border-box; }
+    
+    .dashboard-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .header-actions { width: 100%; }
+    .btn-primary { width: 100%; } /* Botón ancho completo en móvil */
+
+    /* 1 Columna en móvil para tarjetas grandes */
+    .insumos-grid { grid-template-columns: 1fr; }
 }
 
-.lote-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 10px;
+/* MODAL */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000;
 }
-
-.lote-header h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #333;
+.modal-content {
+    background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
-
-.btn-delete-mini {
-    background: none;
-    border: none;
-    color: #aaa;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
-.btn-delete-mini:hover { color: red; }
-
-.lote-body .dato {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-}
-
-.lote-body .label { color: #666; }
-.lote-body .valor { font-weight: 600; color: #333; }
-
-/* --- CAMBIO: FOOTER AZULITO --- */
-.lote-footer {
-    margin-top: 15px;
-    padding-top: 10px;
-    border-top: 1px dashed #e0e0e0;
-    font-size: 0.85rem;
-    color: #0d47a1; /* Texto azul oscuro */
-    text-align: center;
-    background-color: #e3f2fd; /* Fondo azul clarito */
-    border-radius: 4px;
-}
-
-/* Contenedor para botones */
-.actions-group {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-/* El botón Excel lo dejamos Verde para que se distinga */
-.btn-excel {
-    background-color: #2e7d32;
-    color: white;
-    border: 1px solid #1b5e20;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    transition: all 0.2s ease;
-    height: 40px;
-}
-
-.btn-excel:hover {
-    background-color: #1b5e20;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-}
+.modal-content h3 { margin-top: 0; }
+.form-row { margin-bottom: 15px; }
+.form-row label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; color: #555; }
+.modal-content input, .modal-content select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.btn-confirm { background-color: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Layout from '../components/layout'; // <--- IMPORTAMOS LAYOUT
 import api from '../api/axios_config';
-import './gestion_lotes.css'; // Reusamos estilos para mantener consistencia
+import './gestion_insumos.css'; // <--- USAMOS SU PROPIO CSS
 
 const GestionInsumos = () => {
   const { campo_id } = useParams();
@@ -10,7 +11,9 @@ const GestionInsumos = () => {
   const [showModal, setShowModal] = useState(false);
   
   // Estado para nuevo insumo
-  const [nuevo, setNuevo] = useState({ nombre: '', categoria: 'Sanidad', stock: '', unidad: 'Dosis', costo_promedio: '' });
+  const [nuevo, setNuevo] = useState({ 
+    nombre: '', categoria: 'Sanidad', stock: '', unidad: 'Dosis', costo_promedio: '' 
+  });
 
   // Cargar
   useEffect(() => {
@@ -41,13 +44,18 @@ const GestionInsumos = () => {
     } catch (err) { alert("Error al crear"); }
   };
 
-  // Ajustar Stock Rápido
+  // Ajustar Stock Rápido (Optimista)
   const ajustarStock = async (id, cantidad) => {
     try {
+        // Actualización visual inmediata (Optimistic UI)
+        setInsumos(insumos.map(i => i.id === id ? { ...i, stock: parseFloat(i.stock) + cantidad } : i));
+        
+        // Petición real al backend
         await api.put(`/insumos/${id}/stock?cantidad=${cantidad}`, {}, { withCredentials: true });
-        // Actualización optimista en frontend
-        setInsumos(insumos.map(i => i.id === id ? { ...i, stock: i.stock + cantidad } : i));
-    } catch (err) { alert("Error al ajustar stock"); }
+    } catch (err) { 
+        alert("Error al sincronizar stock");
+        fetchInsumos(); // Revertir si falla
+    }
   };
 
   const eliminar = async (id) => {
@@ -58,76 +66,100 @@ const GestionInsumos = () => {
       } catch (e) { console.error(e); }
   };
 
-  if (loading) return <div>Cargando depósito... 📦</div>;
+  if (loading) return <Layout><div style={{padding:'20px'}}>Cargando depósito... 📦</div></Layout>;
 
   return (
-    <div className="lotes-container"> {/* Reusamos clase container */}
-      <div className="header-actions">
-        <h2>📦 Stock de Insumos</h2>
-        <button className="btn-primary" onClick={() => setShowModal(true)}>+ Nuevo Insumo</button>
-      </div>
-
-      <div className="lotes-grid"> {/* Reusamos el grid de tarjetas */}
-        {insumos.map((item) => (
-          <div key={item.id} className="lote-card" style={{ borderLeft: '5px solid #ff9800' }}> {/* Borde Naranja */}
-            <div className="lote-header">
-                <h3>{item.nombre}</h3>
-                <button className="btn-delete-mini" onClick={() => eliminar(item.id)}>×</button>
-            </div>
+    <Layout> {/* <--- WRAPPER LAYOUT */}
+        <div className="insumos-container">
             
-            <div className="lote-body">
-                <div className="dato">
-                    <span className="label">Categoría:</span>
-                    <span className="valor">{item.categoria}</span>
+            {/* HEADER ESTANDAR */}
+            <div className="dashboard-header">
+                <div>
+                    <h2>📦 Stock de Insumos</h2>
+                    <p className="subtitle">Inventario y control de recursos</p>
                 </div>
-                <div className="dato">
-                    <span className="label">Stock Actual:</span>
-                    <span className="valor" style={{fontSize: '1.2rem', color: item.stock < 10 ? 'red' : '#333'}}>
-                        {item.stock} {item.unidad}
-                    </span>
+                <div className="header-actions">
+                    <button className="btn-primary" onClick={() => setShowModal(true)}>+ Nuevo Insumo</button>
                 </div>
             </div>
 
-            <div className="lote-footer" style={{display:'flex', justifyContent:'center', gap:'10px', background:'transparent'}}>
-                {/* Botones de ajuste rápido */}
-                <button className="btn-move" onClick={() => ajustarStock(item.id, -1)} style={{padding:'5px 12px', background:'#e0e0e0', color:'#333'}}>-</button>
-                <button className="btn-move" onClick={() => ajustarStock(item.id, 1)} style={{padding:'5px 12px', background:'#e0e0e0', color:'#333'}}>+</button>
+            {/* GRID DE TARJETAS */}
+            <div className="insumos-grid">
+                {insumos.map((item) => (
+                <div key={item.id} className="insumo-card">
+                    <div className="card-header">
+                        <h3>{item.nombre}</h3>
+                        <button className="btn-delete-mini" onClick={() => eliminar(item.id)}>×</button>
+                    </div>
+                    
+                    <div className="card-body">
+                        <div className="dato">
+                            <span className="label">Categoría:</span>
+                            <span className="valor-cat">{item.categoria}</span>
+                        </div>
+                        <div className="dato-stock">
+                            <span className="label">Disponible:</span>
+                            <span className={`valor-stock ${item.stock < 10 ? 'critical' : ''}`}>
+                                {item.stock} {item.unidad}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div className="card-footer">
+                        <button className="btn-adjust minus" onClick={() => ajustarStock(item.id, -1)}>-</button>
+                        <span className="adjust-label">Ajustar</span>
+                        <button className="btn-adjust plus" onClick={() => ajustarStock(item.id, 1)}>+</button>
+                    </div>
+                </div>
+                ))}
             </div>
-          </div>
-        ))}
-      </div>
 
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>Alta de Insumo 💉</h3>
-            <form onSubmit={handleCrear}>
-                <input type="text" placeholder="Nombre (ej: Vacuna Aftosa)" required value={nuevo.nombre} onChange={e => setNuevo({...nuevo, nombre: e.target.value})} />
-                
-                <select value={nuevo.categoria} onChange={e => setNuevo({...nuevo, categoria: e.target.value})}>
-                    <option>Sanidad</option>
-                    <option>Alimentación</option>
-                    <option>Suplementos</option>
-                    <option>Combustible</option>
-                    <option>Semillas</option>
-                </select>
+            {/* MODAL */}
+            {showModal && (
+                <div className="modal-overlay">
+                <div className="modal-content">
+                    <h3>Alta de Insumo 💉</h3>
+                    <form onSubmit={handleCrear}>
+                        <div className="form-row">
+                            <label>Nombre</label>
+                            <input type="text" placeholder="Ej: Vacuna Aftosa" required 
+                                value={nuevo.nombre} onChange={e => setNuevo({...nuevo, nombre: e.target.value})} 
+                            />
+                        </div>
+                        
+                        <div className="form-row">
+                            <label>Categoría</label>
+                            <select value={nuevo.categoria} onChange={e => setNuevo({...nuevo, categoria: e.target.value})}>
+                                <option>Sanidad</option><option>Alimentación</option><option>Suplementos</option>
+                                <option>Combustible</option><option>Semillas</option><option>Herramientas</option>
+                            </select>
+                        </div>
 
-                <div style={{display:'flex', gap:'10px'}}>
-                    <input type="number" placeholder="Stock Inicial" required value={nuevo.stock} onChange={e => setNuevo({...nuevo, stock: e.target.value})} />
-                    <select value={nuevo.unidad} onChange={e => setNuevo({...nuevo, unidad: e.target.value})} style={{width:'100px'}}>
-                        <option>Dosis</option><option>Litros</option><option>Kg</option><option>Unidades</option><option>Rollos</option>
-                    </select>
+                        <div style={{display:'flex', gap:'10px'}}>
+                            <div style={{flex:1}}>
+                                <label style={{fontSize:'0.8rem'}}>Cantidad Inicial</label>
+                                <input type="number" placeholder="0" required 
+                                    value={nuevo.stock} onChange={e => setNuevo({...nuevo, stock: e.target.value})} 
+                                />
+                            </div>
+                            <div style={{width:'100px'}}>
+                                <label style={{fontSize:'0.8rem'}}>Unidad</label>
+                                <select value={nuevo.unidad} onChange={e => setNuevo({...nuevo, unidad: e.target.value})}>
+                                    <option>Dosis</option><option>Litros</option><option>Kg</option><option>Uni</option><option>Rollos</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="modal-actions">
+                            <button type="button" onClick={() => setShowModal(false)}>Cancelar</button>
+                            <button type="submit" className="btn-confirm">Guardar</button>
+                        </div>
+                    </form>
                 </div>
-
-                <div className="modal-actions">
-                    <button type="button" onClick={() => setShowModal(false)}>Cancelar</button>
-                    <button type="submit" className="btn-confirm">Guardar</button>
                 </div>
-            </form>
-          </div>
+            )}
         </div>
-      )}
-    </div>
+    </Layout>
   );
 };
 
