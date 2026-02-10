@@ -1,145 +1,128 @@
+/* --- CONTENEDOR PRINCIPAL --- */
 .resumen-container {
     padding: 20px;
-    max-width: 1000px;
-    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box; /* Crucial para que el padding no rompa el ancho */
 }
 
-.kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
-}
-
-.kpi-card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    text-align: center;
-    border-top: 5px solid #ccc;
-}
-
-.card-blue { border-top-color: #2196f3; }
-.card-green { border-top-color: #4caf50; }
-.card-orange { border-top-color: #ff9800; }
-
-.kpi-card h3 { margin: 0; font-size: 1rem; color: #666; font-weight: normal; }
-.kpi-number { font-size: 2.5rem; font-weight: bold; margin: 10px 0; color: #333; }
-.kpi-label { font-size: 0.8rem; color: #999; }
-
-/* Distribución */
-.details-section {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.cat-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    gap: 15px;
-}
-
-.cat-name { width: 100px; font-weight: 600; }
-.cat-count { width: 40px; text-align: right; font-weight: bold; }
-
-.progress-bar-bg {
-    flex: 1;
-    height: 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background-color: #2196f3;
-    border-radius: 5px;
-}
-
-.alertas-section {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-.alerta-banner {
-    padding: 12px 15px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 500;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.alerta-danger {
-    background-color: #ffebee;
-    color: #c62828;
-    border-left: 5px solid #c62828;
-}
-
-.alerta-warning {
-    background-color: #fff8e1;
-    color: #f57f17;
-    border-left: 5px solid #f57f17;
-}
-
-.alerta-info {
-    background-color: #e3f2fd;
-    color: #1565c0;
-    border-left: 5px solid #1565c0;
-}
-
-.alerta-icon {
-    font-size: 1.2rem;
-}
-
-/* --- HEADER & CLIMA --- */
+/* --- HEADER (Título + Clima + Botón) --- */
 .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Permite que baje si no hay espacio */
+    gap: 20px;
 }
 
-.subtitle { color: #666; margin-top: -10px; font-size: 0.9rem; }
+.dashboard-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #2c3e50;
+}
+
+.subtitle {
+    color: #7f8c8d;
+    margin: 5px 0 0 0;
+}
+
+/* Widget de Clima y Botones */
+.header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
 
 .weather-widget {
-    display: flex;
-    align-items: center;
-    gap: 10px;
     background: white;
     padding: 8px 15px;
     border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.weather-icon { font-size: 1.5rem; }
-.weather-info { display: flex; flex-direction: column; line-height: 1.1; }
-.weather-info .temp { font-weight: bold; font-size: 1.1rem; }
-.weather-info .city { font-size: 0.75rem; color: #888; }
+.btn-reporte {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
 
-/* --- ALERTAS MEJORADAS --- */
+.btn-reporte:hover {
+    background-color: #219150;
+}
+
+/* --- ALERTAS --- */
+.alertas-section {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .alerta-banner {
-    justify-content: space-between; /* Flecha a la derecha */
-    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 5px solid;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
-.alerta-banner:hover {
-    transform: translateX(5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-.alerta-content { display: flex; align-items: center; gap: 10px; }
-.alerta-arrow { font-weight: bold; color: rgba(0,0,0,0.3); }
 
-/* --- GRÁFICOS GRID --- */
+.alerta-danger { border-color: #e74c3c; color: #c0392b; background-color: #fadbd8; }
+.alerta-warning { border-color: #f1c40f; color: #d4ac0d; background-color: #fcf3cf; }
+.alerta-info { border-color: #3498db; color: #2980b9; background-color: #d6eaf8; }
+
+/* --- GRID DE KPIS (Tarjetas de números) --- */
+.kpi-grid {
+    display: grid;
+    /* MÁGICA: Crea columnas automáticas de mínimo 250px. 
+       En PC caben 3, en móvil cabe 1. */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.kpi-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-top: 4px solid transparent;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.card-blue { border-top-color: #3498db; }
+.card-green { border-top-color: #2ecc71; }
+.card-orange { border-top-color: #e67e22; }
+
+.kpi-number {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #2c3e50;
+}
+
+/* --- GRID DE GRÁFICOS --- */
 .charts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* En PC: 2 columnas iguales. En móvil cambiará a 1. */
+    grid-template-columns: 1fr 1fr; 
     gap: 20px;
 }
 
@@ -147,36 +130,50 @@
     background: white;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    min-height: 350px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    /* Asegura que el gráfico no se desborde */
     min-width: 0; 
-    overflow: hidden;
-}
-
-.chart-card h3 { margin-bottom: 20px; color: #444; font-size: 1.1rem; text-align: center; }
-
-.no-data { text-align: center; color: #999; margin-top: 50px; }
-
-/* Tips */
-.info-card { background: linear-gradient(135deg, #fff 0%, #f9f9f9 100%); }
-.tips-list { padding-left: 20px; color: #555; line-height: 1.8; }
-
-.btn-reporte {
-    background-color: #2e7d32; /* Verde Excel */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px; /* Redondito para que combine con el clima */
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: background 0.2s;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
 }
 
-.btn-reporte:hover {
-    background-color: #1b5e20;
-    transform: translateY(-1px);
+.chart-card h3 {
+    margin-bottom: 20px;
+    color: #34495e;
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* =========================================
+   RESPONSIVE (MÓVIL) - Pantallas < 768px
+   ========================================= */
+@media (max-width: 768px) {
+    
+    .resumen-container {
+        padding: 10px; /* Menos padding en celular */
+    }
+
+    /* Header: Stack vertical */
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* Gráficos: 1 sola columna en móvil */
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Ajuste de KPI Cards para que no sean gigantes en móvil */
+    .kpi-number {
+        font-size: 2.5rem;
+    }
 }

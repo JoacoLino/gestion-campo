@@ -123,7 +123,7 @@ const Resumen = () => {
           <p className="subtitle">Visión general del establecimiento</p>
         </div>
         
-        <div style={{display: 'flex', gap: '15px', alignItems: 'center'}}>
+        <div className="header-actions"> 
             <div className="weather-widget">
                 <span className="weather-icon">{clima.icon || '⏳'}</span>
                 <div className="weather-info">
