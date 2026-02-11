@@ -3,6 +3,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/layout';
 import api from '../api/axios_config';
 import './gestion_animales.css';
+import { toast } from 'sonner';
 
 const GestionAnimales = () => {
   const { campo_id } = useParams();
@@ -109,7 +110,23 @@ const GestionAnimales = () => {
       setTodosLosAnimales([...todosLosAnimales, response.data]);
       setShowCreateModal(false);
       setNuevoAnimal({ caravana: '', categoria: 'Vaca', raza: '', peso: '', lote_id: '' });
-    } catch (error) { console.error(error); }
+      toast.success('¡Animal creado con éxito!');
+    } catch (error) {console.error(error); 
+      
+      // Aquí revisamos si es el error de LÍMITE DE PLAN
+      if (error.response?.status === 402) {
+          toast.error(error.response.data.detail, {
+              duration: 8000,
+              action: {
+                  label: '⭐ Ver Planes',
+                  onClick: () => navigate('/suscripcion') 
+              },
+          });
+          setShowCreateModal(false); 
+      } else {
+          toast.error('Hubo un error al crear al animal.'); 
+      }
+    }
   };
 
   const handleEliminar = async (id) => {
@@ -117,7 +134,8 @@ const GestionAnimales = () => {
     try {
       await api.delete(`/animales/${id}`, { withCredentials: true });
       setTodosLosAnimales(todosLosAnimales.filter(a => a.id !== id));
-    } catch (error) { console.error(error); }
+      toast.info('¡Animal eliminado con éxito!');
+    } catch (error) { console.error(error); toast.success('Hubo un error al eliminar el animal.'); }
   };
 
   const handleExportar = async () => {

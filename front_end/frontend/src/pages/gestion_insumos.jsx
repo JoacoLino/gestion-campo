@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Layout from '../components/layout'; // <--- IMPORTAMOS LAYOUT
 import api from '../api/axios_config';
 import './gestion_insumos.css'; // <--- USAMOS SU PROPIO CSS
+import { toast } from 'sonner';
 
 const GestionInsumos = () => {
   const { campo_id } = useParams();
@@ -41,7 +42,8 @@ const GestionInsumos = () => {
       setShowModal(false);
       setNuevo({ nombre: '', categoria: 'Sanidad', stock: '', unidad: 'Dosis', costo_promedio: '' });
       fetchInsumos();
-    } catch (err) { alert("Error al crear"); }
+      toast.success('¡Insumo creado con éxito!');
+    } catch (err) { alert("Error al crear"); toast.error('Hubo un error al crear el insumo.');}
   };
 
   // Ajustar Stock Rápido (Optimista)
@@ -63,7 +65,8 @@ const GestionInsumos = () => {
       try {
           await api.delete(`/insumos/${id}`, { withCredentials: true });
           setInsumos(insumos.filter(i => i.id !== id));
-      } catch (e) { console.error(e); }
+          toast.info('¡Insumo eliminado con éxito!');
+      } catch (e) { console.error(e); toast.error('Hubo un error al eliminar el insumo.'); }
   };
 
   if (loading) return <Layout><div style={{padding:'20px'}}>Cargando depósito... 📦</div></Layout>;

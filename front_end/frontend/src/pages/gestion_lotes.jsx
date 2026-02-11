@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '../components/layout'; // <--- IMPORTAMOS LAYOUT
 import api from '../api/axios_config';
 import './gestion_lotes.css';
+import { toast } from 'sonner';
 
 const GestionLotes = () => {
   const { campo_id } = useParams();
@@ -39,9 +40,11 @@ const GestionLotes = () => {
       setLotes([...lotes, response.data]);
       setShowModal(false);
       setNuevoLote({ name: '', superficie: '', cultivo: '' });
+
+      toast.success('¡Potrero creado con éxito! 🌱');
     } catch (error) {
       console.error("Error creando lote:", error);
-      alert("Error al crear el lote");
+      toast.error('Hubo un error al crear el lote.');
     }
   };
 
@@ -51,8 +54,12 @@ const GestionLotes = () => {
     try {
       await api.delete(`/lotes/${id}`, { withCredentials: true });
       setLotes(lotes.filter(l => l.id !== id));
+
+      toast.info('Lote eliminado correctamente.');
     } catch (error) {
       console.error("Error eliminando:", error);
+
+      toast.error('No se pudo eliminar el lote.');
     }
   };
 

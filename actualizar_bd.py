@@ -9,6 +9,7 @@ from app.models.sanidad_models import EventoSanitario
 from app.models.agenda_models import AgendaEvento 
 
 from app.models.insumo_models import Insumo
+from app.models.plan_models import Plan
 
 print("Detectando nuevas tablas...")
 # create_all es inteligente: Solo crea las tablas que NO existen.

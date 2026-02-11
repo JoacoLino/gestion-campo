@@ -9,6 +9,7 @@ import GestionAnimales from './pages/gestion_animales';
 import GestionSanidad from './pages/gestion_sanidad';
 import GestionAgenda from './pages/gestion_agenda';
 import GestionInsumos from './pages/gestion_insumos';
+import { Toaster } from 'sonner';
 
 // --- BORRA LAS LÍNEAS QUE DECÍAN "const Resumen = ..." ---
 
@@ -19,6 +20,7 @@ const Ganado = () => <h2>🐄 Gestión de Ganado (Próximamente)</h2>;
 function App() {
   return (
     <BrowserRouter>
+    <Toaster richColors position="top-right" />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path='/register' element={<Register/>} />

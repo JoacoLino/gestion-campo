@@ -8,9 +8,23 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const { campo_id } = useParams(); 
 
-  const isActive = (path) => location.pathname.includes(path) ? 'active' : '';
+  // --- LÓGICA DE ACTIVACIÓN CORRECTA ---
+  const isActive = (path) => {
+    const currentPath = location.pathname;
+
+    // Caso 1: Resumen (Es la raíz del dashboard o explícitamente /resumen)
+    if (path === `/dashboard/${campo_id}`) {
+        // Se activa si es EXACTAMENTE la base O si termina en /resumen
+        return currentPath === path || currentPath === `${path}/resumen` ? 'active' : '';
+    }
+
+    // Caso 2: El resto (Lotes, Ganado, etc.)
+    // Se activa si la URL actual "empieza con" el path del botón
+    return currentPath.startsWith(path) ? 'active' : '';
+  };
 
   const menuItems = [
+    // Apuntamos a la base, pero la lógica de arriba lo maneja
     { name: 'Resumen', path: `/dashboard/${campo_id}`, icon: '📊' },
     { name: 'Lotes', path: `/dashboard/${campo_id}/lotes`, icon: '🗺️' },
     { name: 'Ganado', path: `/dashboard/${campo_id}/animales`, icon: '🐄' },
@@ -21,17 +35,11 @@ const Layout = ({ children }) => {
 
   return (
     <div className="layout-wrapper">
-      
-      {/* 1. NAVBAR MÓVIL (NUEVO) */}
-      {/* Solo visible en pantallas chicas */}
       <header className="mobile-navbar">
-        <button className="mobile-toggle" onClick={() => setIsOpen(true)}>
-          ☰
-        </button>
+        <button className="mobile-toggle" onClick={() => setIsOpen(true)}>☰</button>
         <span className="mobile-logo">🌾 Mi Campo SaaS</span>
       </header>
 
-      {/* 2. SIDEBAR (Menú Lateral) */}
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <h3>🌾 Mi Campo SaaS</h3>
@@ -61,11 +69,8 @@ const Layout = ({ children }) => {
         </div>
       </aside>
 
-      {/* 3. CONTENIDO PRINCIPAL */}
       <main className="layout-content">
-        {/* Fondo oscuro al abrir menú */}
         <div className={`overlay ${isOpen ? 'show' : ''}`} onClick={() => setIsOpen(false)}></div>
-        
         {children}
       </main>
     </div>

@@ -10,6 +10,7 @@ from app.models.campo_models import Campo
 from app.models.animal_models import Animal
 from app.models.users_models import User
 from app.models.lote_models import Lote
+from app.models.plan_models import Plan
 # Imports de CRUD
 from app.crud.animal_crud import create_animal, get_animales_by_campo, delete_animal
 # Imports de Auth
@@ -49,6 +50,27 @@ def create_new_animal(
     db: Session = Depends(get_db),
     current_user: User = Depends(obtener_usuario_actual) # <--- Recibimos User
 ):
+    # 1. OBTENER EL PLAN DEL USUARIO
+    plan_usuario = db.query(Plan).filter(Plan.id == current_user.plan_id).first()
+    
+    # 2. CONTAR CUÁNTOS ANIMALES TIENE ESTE USUARIO (en todos sus campos)
+    # Hacemos un JOIN con Campo porque los animales pertenecen a un campo, y el campo al usuario
+    total_animales = (
+        db.query(Animal)
+        .join(Campo)
+        .filter(Campo.user_id == current_user.id) # Asegúrate de que tu modelo Campo use user_id o usuario_id
+        .count()
+    )
+    
+    # 3. EL GUARDIÁN: VERIFICAR LÍMITES
+    # Si max_animales es -1, significa "Ilimitado" (Plan Estancia), así que lo dejamos pasar.
+    if plan_usuario.max_animales != -1 and total_animales >= plan_usuario.max_animales:
+        # Usamos el código 402 (Payment Required) o 403 (Forbidden)
+        raise HTTPException(
+            status_code=402, 
+            detail=f"Límite alcanzado ({plan_usuario.max_animales} animales). Mejora tu plan para seguir creciendo. 🚀"
+        )
+
     validar_dueno_campo(campo_id, current_user, db)
     return create_animal(db, animal, campo_id)
 

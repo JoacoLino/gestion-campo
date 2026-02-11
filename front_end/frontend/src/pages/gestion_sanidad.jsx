@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Layout from '../components/layout'; // <--- IMPORTAMOS LAYOUT
 import api from '../api/axios_config';
 import './gestion_sanidad.css';
+import { toast } from 'sonner';
 
 const GestionSanidad = () => {
   const { campo_id } = useParams();
@@ -49,7 +50,9 @@ const GestionSanidad = () => {
       setEventos([response.data, ...eventos]);
       setShowModal(false);
       setNuevoEvento({ fecha: new Date().toISOString().split('T')[0], tipo: 'Vacunación', producto: '', notas: '', costo_total: '', animal_id: '' });
-    } catch (error) { alert("Error al guardar"); }
+
+      toast.success('¡Evento sanitario creado con éxito!');
+    } catch (error) { alert("Error al guardar"); toast.error('Hubo un error al crear el evento sanitario.');} 
   };
 
   const handleEliminar = async (id) => {
@@ -57,7 +60,8 @@ const GestionSanidad = () => {
     try {
       await api.delete(`/sanidad/${id}`, { withCredentials: true });
       setEventos(eventos.filter(e => e.id !== id));
-    } catch (error) { console.error(error); }
+      toast.info('¡Evento sanitario eliminado con exito!');
+    } catch (error) { console.error(error); toast.error('Hubo un error al eliminar el evento sanitario.'); }
   };
 
   const handleExportar = async () => {

@@ -17,4 +17,6 @@ class User(Base):
     campos = relationship("Campo", back_populates="user")
     
     refresh_tokens = relationship("RefreshToken", back_populates="users")
+    plan_id = Column(Integer, ForeignKey("planes.id"), default=1)
+    plan = relationship("Plan", back_populates="usuarios")
 

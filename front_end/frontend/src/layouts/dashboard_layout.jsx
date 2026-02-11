@@ -45,7 +45,7 @@ const DashboardLayout = () => {
     <div className="dashboard-container">
       <aside className="sidebar">
         <div className="sidebar-header">
-           <h2>🌾 Mi Campo SaaS</h2>
+           <h2></h2>
            
            <div className="campo-info-box">
              {/* Aquí mostramos "Cargando" solo en el texto, sin parpadeos */}
@@ -113,7 +113,7 @@ const DashboardLayout = () => {
       
       <main className="main-content">
         <header className="topbar">
-            <h3>Gestión: {campoInfo?.name || "..."}</h3>
+            <h3></h3>
             <button className="logout-btn-small" onClick={handleLogout}>Salir</button>
         </header>
         

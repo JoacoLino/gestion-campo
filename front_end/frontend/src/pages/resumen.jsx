@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Layout from '../components/layout'; // <--- IMPORTANTE: Importamos el Layout
 import api from '../api/axios_config';
 import './resumen.css';
+import Layout from '../components/layout'; // <--- IMPORTANTE: Usamos nuestro componente Wrapper
 
-// --- Imports de Recharts ---
+// Gráficos
 import { 
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid 
@@ -24,9 +24,10 @@ const Resumen = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  // Colores gráfico torta
+  // Colores Gráfico
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
+  // Carga de Datos
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -41,7 +42,7 @@ const Resumen = () => {
     fetchStats();
   }, [campo_id]);
 
-  // --- Lógica Clima ---
+  // Clima
   const [clima, setClima] = useState({ temp: '--', code: 0, city: 'Cargando...' });
 
   useEffect(() => {
@@ -108,17 +109,21 @@ const Resumen = () => {
 
   const dataBarras = stats.actividad_mensual || [];
 
-  if (loading) return <div className="loading-screen">Calculando índices productivos... 📊</div>;
-
   return (
-    <Layout> {/* <--- TODO ENVUELTO EN LAYOUT */}
+    <Layout> {/* <--- EL LAYOUT ENVUELVE TODO, INCLUSO EL LOADING */}
+      
+      {loading ? (
+        <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'80vh', color:'#666' }}>
+            <h2>📊 Cargando Tablero...</h2>
+        </div>
+      ) : (
         <div className="resumen-container">
-        
-        {/* HEADER */}
-        <div className="dashboard-header">
-            <div className="header-titles">
-            <h2>Tablero de Control</h2>
-            <p className="subtitle">Visión general del establecimiento</p>
+          
+          {/* HEADER */}
+          <div className="dashboard-header">
+            <div>
+              <h2>Tablero de Control</h2>
+              <p className="subtitle">Visión general del establecimiento</p>
             </div>
             
             <div className="header-actions">
@@ -134,37 +139,38 @@ const Resumen = () => {
                     📄 Exportar
                 </button>
             </div>
-        </div>
+          </div>
 
-        {/* ALERTAS */}
-        {stats.alertas && stats.alertas.length > 0 && (
+          {/* ALERTAS */}
+          {stats.alertas && stats.alertas.length > 0 && (
             <div className="alertas-section">
-            {stats.alertas.map((alerta, index) => (
-                <div 
-                    key={index} 
-                    className={`alerta-banner alerta-${alerta.tipo}`}
-                    onClick={() => {
-                        const mensaje = alerta.mensaje.toLowerCase();
-                        if (mensaje.includes("sin lote")) navigate(`/dashboard/${campo_id}/animales?sin_lote=true`);
-                        else if (mensaje.includes("peso")) navigate(`/dashboard/${campo_id}/animales`); 
-                        else if (mensaje.includes("potreros")) navigate(`/dashboard/${campo_id}/lotes`);
-                        else if (mensaje.includes("tareas")) navigate(`/dashboard/${campo_id}/agenda`);
-                    }}
-                >
-                    <div className="alerta-content">
-                        <span className="alerta-icon">
-                            {alerta.tipo === 'danger' ? '⚠️' : alerta.tipo === 'warning' ? '⚡' : 'ℹ️'}
-                        </span>
-                        <span>{alerta.mensaje}</span>
-                    </div>
-                    <span className="alerta-arrow">→</span>
-                </div>
-            ))}
+              {stats.alertas.map((alerta, index) => (
+                  <div 
+                      key={index} 
+                      className={`alerta-banner alerta-${alerta.tipo}`}
+                      onClick={() => {
+                          const mensaje = alerta.mensaje.toLowerCase();
+                          if (mensaje.includes("sin lote")) navigate(`/dashboard/${campo_id}/animales?sin_lote=true`);
+                          else if (mensaje.includes("peso")) navigate(`/dashboard/${campo_id}/animales`); 
+                          else if (mensaje.includes("potreros")) navigate(`/dashboard/${campo_id}/lotes`);
+                          else if (mensaje.includes("tareas")) navigate(`/dashboard/${campo_id}/agenda`);
+                      }}
+                      style={{ cursor: 'pointer' }}
+                  >
+                      <div className="alerta-content">
+                          <span className="alerta-icon">
+                              {alerta.tipo === 'danger' ? '⚠️' : alerta.tipo === 'warning' ? '⚡' : 'ℹ️'}
+                          </span>
+                          <span>{alerta.mensaje}</span>
+                      </div>
+                      <span className="alerta-arrow">→</span>
+                  </div>
+              ))}
             </div>
-        )}
+          )}
 
-        {/* KPI CARDS (Números) */}
-        <div className="kpi-grid">
+          {/* KPI CARDS */}
+          <div className="kpi-grid">
             <div className="kpi-card card-blue" onClick={() => navigate(`/dashboard/${campo_id}/animales`)}>
                 <h3>🐄 Stock Total</h3>
                 <p className="kpi-number">{stats.total_animales}</p>
@@ -182,10 +188,10 @@ const Resumen = () => {
                 <p className="kpi-number">{stats.total_eventos}</p>
                 <span className="kpi-label">Eventos este año</span>
             </div>
-        </div>
+          </div>
 
-        {/* GRÁFICOS */}
-        <div className="charts-grid">
+          {/* GRÁFICOS */}
+          <div className="charts-grid">
             
             {/* GRÁFICO DE DONA */}
             <div className="chart-card">
@@ -231,8 +237,9 @@ const Resumen = () => {
                     </BarChart>
                 </ResponsiveContainer>
             </div>
+          </div>
         </div>
-        </div>
+      )}
     </Layout>
   );
 };

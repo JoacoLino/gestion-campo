@@ -5,6 +5,7 @@ import 'react-calendar/dist/Calendar.css'; // Estilos base del calendario
 import Layout from '../components/layout'; // <--- IMPORTAMOS LAYOUT
 import api from '../api/axios_config';
 import './gestion_agenda.css';
+import { toast } from 'sonner';
 
 const GestionAgenda = () => {
   const { campo_id } = useParams();
@@ -36,7 +37,8 @@ const GestionAgenda = () => {
       setEventos([...eventos, res.data]);
       setShowModal(false);
       setNuevoEvento({ title: '', tipo: 'Sanidad', descripcion: '', fecha: new Date().toISOString().split('T')[0] });
-    } catch (error) { alert("Error al guardar"); }
+      toast.success('¡Un evento creado con éxito!');
+    } catch (error) { alert("Error al guardar"); toast.error('Hubo un error al crear el evento.');}
   };
 
   // 3. Marcar Completado (Checkbox)
@@ -60,7 +62,8 @@ const GestionAgenda = () => {
     try {
         await api.delete(`/agenda/${id}`, { withCredentials: true });
         setEventos(eventos.filter(e => e.id !== id));
-    } catch (error) { console.error(error); }
+        toast.info('¡Evento eliminado con éxito!');
+    } catch (error) { console.error(error); toast.error('Hubo un error al eliminar el evento.'); }
   };
 
   // Abrir modal pre-cargando la fecha seleccionada en el calendario
