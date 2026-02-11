@@ -119,7 +119,7 @@ const GestionAnimales = () => {
               duration: 8000,
               action: {
                   label: '⭐ Ver Planes',
-                  onClick: () => navigate('/suscripcion') 
+                  onClick: () => navigate(`/dashboard/${campo_id}/suscripcion`) 
               },
           });
           setShowCreateModal(false); 
