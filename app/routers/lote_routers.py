@@ -1,72 +1,62 @@
-# app/routers/lote_routers.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
 from app.database import get_db
 from app.schemas.lote_schemas import LoteCreate, LoteOut
-from app.crud.lote_crud import crear_lote, obtener_lotes_por_campo, eliminar_lote
 from app.models.campo_models import Campo
 from app.models.lote_models import Lote
-from app.models.users_models import User # <--- Asegúrate de tener este import
-from app.auth.auth_dependencies import obtener_usuario_actual
+from app.models.users_models import User
+# Importamos la llave maestra
+from app.auth.auth_dependencies import obtener_usuario_actual, verificar_acceso_campo
 
 router = APIRouter()
 
-# --- VALIDACIÓN DE SEGURIDAD ACTUALIZADA ---
-def validar_dueno_campo(campo_id: int, user: User, db: Session):
-    # Ya no buscamos el usuario, usamos user.id directo
-    
-    # Buscamos si el campo existe Y es del usuario
-    campo = db.query(Campo).filter(Campo.id == campo_id, Campo.user_id == user.id).first()
-    if not campo:
-        raise HTTPException(status_code=403, detail="No tienes permiso sobre este campo")
-    return campo
-
-# 1. CREAR LOTE
+# 1. CREAR LOTE (Funciona bien porque tiene campo_id en URL)
 @router.post("/{campo_id}/", response_model=LoteOut)
 def create_new_lote(
     campo_id: int,
     lote: LoteCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(obtener_usuario_actual) # <--- Recibimos User
+    current_user: User = Depends(obtener_usuario_actual),
+    campo_validado: Campo = Depends(verificar_acceso_campo)
 ):
-    # Verificamos que el campo sea tuyo antes de crear nada
-    validar_dueno_campo(campo_id, current_user, db)
-    return crear_lote(db, lote, campo_id)
+    nuevo_lote = Lote(**lote.dict(), campo_id=campo_id)
+    db.add(nuevo_lote)
+    db.commit()
+    db.refresh(nuevo_lote)
+    return nuevo_lote
 
-# 2. LISTAR LOTES DE UN CAMPO
+# 2. LISTAR LOTES (Funciona bien porque tiene campo_id en URL)
 @router.get("/{campo_id}/", response_model=List[LoteOut])
 def read_lotes(
     campo_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(obtener_usuario_actual) # <--- Recibimos User
+    current_user: User = Depends(obtener_usuario_actual),
+    campo_validado: Campo = Depends(verificar_acceso_campo)
 ):
-    validar_dueno_campo(campo_id, current_user, db)
-    
-    # 1. Obtenemos los lotes de la base de datos
-    lotes_db = obtener_lotes_por_campo(db, campo_id)
-    
-    # 2. Calculamos la cantidad de animales
-    for lote in lotes_db:
-        lote.cantidad_animales = len(lote.animales) 
-    
-    return lotes_db
+    lotes = db.query(Lote).filter(Lote.campo_id == campo_id).all()
+    return lotes
 
-# 3. ELIMINAR LOTE
+# 3. ELIMINAR LOTE (🔴 AQUÍ ESTABA EL ERROR)
 @router.delete("/{lote_id}")
 def delete_lote(
     lote_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(obtener_usuario_actual) # <--- Recibimos User
+    current_user: User = Depends(obtener_usuario_actual)
+    # ❌ QUITAMOS "Depends(verificar_acceso_campo)" AQUÍ
+    # Porque la URL no tiene el campo_id, así que FastAPI no sabe qué validar todavía.
 ):
-    # Primero averiguamos de quién es el lote
+    # 1. Primero buscamos el lote
     lote = db.query(Lote).filter(Lote.id == lote_id).first()
     if not lote:
         raise HTTPException(status_code=404, detail="Lote no encontrado")
     
-    # Validamos permiso sobre el campo dueño del lote
-    validar_dueno_campo(lote.campo_id, current_user, db)
+    # 2. ✅ AHORA SÍ VALIDAMOS MANUALMENTE
+    # Usamos el campo_id que estaba guardado dentro del lote
+    verificar_acceso_campo(lote.campo_id, db, current_user)
     
-    eliminar_lote(db, lote_id)
+    # 3. Eliminar
+    db.delete(lote)
+    db.commit()
     return {"mensaje": "Lote eliminado correctamente"}

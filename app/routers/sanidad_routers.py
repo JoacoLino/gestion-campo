@@ -7,31 +7,25 @@ from app.models.users_models import User
 from app.models.campo_models import Campo
 from app.models.sanidad_models import EventoSanitario
 from app.schemas.sanidad_schemas import SanidadCreate, SanidadOut
-from app.auth.auth_dependencies import obtener_usuario_actual
+# Importamos la llave maestra
+from app.auth.auth_dependencies import obtener_usuario_actual, verificar_acceso_campo
 
 router = APIRouter()
 
-# --- VALIDACIÓN DE SEGURIDAD CORREGIDA ---
-# Ahora recibe 'user: User' directamente, NO un string 'user_email'
-def validar_acceso(campo_id: int, user: User, db: Session):
-    # Ya no necesitamos buscar el usuario por email, porque 'user' YA ES el usuario
-    
-    # Solo verificamos que el campo sea de este usuario usando su ID
-    campo = db.query(Campo).filter(Campo.id == campo_id, Campo.user_id == user.id).first()
-    if not campo:
-        raise HTTPException(status_code=403, detail="Permiso denegado sobre este campo")
-    return campo
+# (Borramos la función 'validar_acceso' antigua, ya no la necesitamos)
 
-# 1. REGISTRAR UN EVENTO SANITARIO
+# 1. REGISTRAR UN EVENTO SANITARIO (Validación Automática)
 @router.post("/{campo_id}/", response_model=SanidadOut)
 def crear_evento(
     campo_id: int,
     evento: SanidadCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(obtener_usuario_actual) # Recibe el objeto User
+    current_user: User = Depends(obtener_usuario_actual),
+    # 👇 Validación Automática: Dueño O Peón pasan
+    campo_validado: Campo = Depends(verificar_acceso_campo)
 ):
-    validar_acceso(campo_id, current_user, db)
-
+    # Ya no llamamos a validar_acceso manual.
+    
     nuevo_evento = EventoSanitario(
         fecha=evento.fecha,
         tipo=evento.tipo,
@@ -47,15 +41,14 @@ def crear_evento(
     db.refresh(nuevo_evento)
     return nuevo_evento
 
-# 2. VER HISTORIAL SANITARIO DEL CAMPO
+# 2. VER HISTORIAL SANITARIO DEL CAMPO (Ya estaba bien, lo dejamos igual)
 @router.get("/{campo_id}/", response_model=List[SanidadOut])
 def listar_eventos(
     campo_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(obtener_usuario_actual) # Recibe el objeto User
+    current_user: User = Depends(obtener_usuario_actual),
+    campo_validado: Campo = Depends(verificar_acceso_campo)
 ):
-    validar_acceso(campo_id, current_user, db)
-    
     eventos = db.query(EventoSanitario)\
                 .filter(EventoSanitario.campo_id == campo_id)\
                 .order_by(EventoSanitario.fecha.desc())\
@@ -64,7 +57,6 @@ def listar_eventos(
     # Inyectar nombre del animal si existe
     resultado = []
     for ev in eventos:
-        # Usamos from_attributes=True en el schema (Pydantic V2)
         ev_out = SanidadOut.from_orm(ev) 
         if ev.animal:
             ev_out.nombre_animal = f"{ev.animal.caravana} ({ev.animal.categoria})"
@@ -72,18 +64,20 @@ def listar_eventos(
         
     return resultado
 
-# 3. ELIMINAR EVENTO
+# 3. ELIMINAR EVENTO (Validación Manual)
 @router.delete("/{evento_id}")
 def eliminar_evento(
     evento_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(obtener_usuario_actual) # Recibe el objeto User
+    current_user: User = Depends(obtener_usuario_actual)
 ):
+    # Primero buscamos el evento
     evento = db.query(EventoSanitario).filter(EventoSanitario.id == evento_id).first()
     if not evento:
         raise HTTPException(status_code=404, detail="Evento no encontrado")
         
-    validar_acceso(evento.campo_id, current_user, db) # Verificamos dueño
+    # 👇 Validación Manual con la llave maestra
+    verificar_acceso_campo(evento.campo_id, db, current_user)
     
     db.delete(evento)
     db.commit()

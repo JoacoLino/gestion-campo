@@ -12,5 +12,6 @@ class Plan(Base):
     # --- LOS LÍMITES DUROS ---
     max_campos = Column(Integer, default=1)
     max_animales = Column(Integer, default=100)
+    max_usuarios = Column(Integer, default=1)
     
     usuarios = relationship("User", back_populates="plan")

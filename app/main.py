@@ -17,7 +17,8 @@ from app.routers import (
     sanidad_routers,
     dashboard_routers,
     report_routers,
-    agenda_routers
+    agenda_routers,
+    equipo_routers
 )
 from app.auth import auth_routes
 
@@ -56,6 +57,7 @@ app.include_router(sanidad_routers.router, prefix="/sanidad", tags=["sanidad"])
 app.include_router(dashboard_routers.router, prefix="/dashboard-data", tags=["dashboard"])
 app.include_router(report_routers.router, prefix="/reportes", tags=["reportes"])
 app.include_router(agenda_routers.router, prefix="/agenda", tags=["agenda"])
+app.include_router(equipo_routers.router, tags=["Equipo"])
 for route in app.routes:
     print(f"{route.path} - {route.methods}")
 
