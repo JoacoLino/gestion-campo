@@ -12,7 +12,10 @@ from app.models import (
     actividad_models, 
     insumo_models, 
     refresh_token_models,
-    sanidad_models
+    sanidad_models,
+    agenda_models,
+    plan_models,
+    
 )
 
 
