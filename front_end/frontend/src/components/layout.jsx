@@ -1,12 +1,23 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import './layout.css';
+import api from '../api/axios_config';
 
 const Layout = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { campo_id } = useParams(); 
+
+  const handleLogout = async () => {
+    try {
+        await api.post('/auth_routes/logout');
+    } catch (e) {
+        console.error("Error al cerrar sesión", e);
+    } finally {
+        navigate('/');
+    }
+  };
 
   // --- LÓGICA DE ACTIVACIÓN CORRECTA ---
   const isActive = (path) => {
@@ -39,8 +50,27 @@ const Layout = ({ children }) => {
   return (
     <div className="layout-wrapper">
       <header className="mobile-navbar">
-        <button className="mobile-toggle" onClick={() => setIsOpen(true)}>☰</button>
-        <span className="mobile-logo">🌾 Mi Campo SaaS</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <button className="mobile-toggle" onClick={() => setIsOpen(true)}>☰</button>
+          <span className="mobile-logo">🌾 Mi Campo</span>
+        </div>
+        
+        {/* 👇 NUEVO BOTÓN DE SALIR PARA MÓVIL 👇 */}
+        <button 
+          onClick={handleLogout} 
+          style={{ 
+            marginLeft: 'auto', 
+            padding: '6px 12px', 
+            border: '1px solid #e0e0e0', 
+            borderRadius: '6px', 
+            background: 'white', 
+            color: '#ef4444', 
+            fontWeight: '600', 
+            cursor: 'pointer' 
+          }}
+        >
+          Salir
+        </button>
       </header>
 
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
