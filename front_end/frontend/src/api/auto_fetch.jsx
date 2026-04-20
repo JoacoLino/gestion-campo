@@ -54,7 +54,7 @@ export const authFetch = async (endpoint, options = {}, navigate) => {
 export const authFetch = async (url, options = {}, navigate) => {
   const token = localStorage.getItem('access_token');
   if (!token) {
-    navigate('/login');
+    navigate('/');
     throw new Error('No autorizado: No hay token');
   }
 
@@ -68,7 +68,7 @@ export const authFetch = async (url, options = {}, navigate) => {
 
   if (response.status === 401) {
     // Token inválido o expirado
-    navigate('/login');
+    navigate('/');
     throw new Error('No autorizado');
   }
 

@@ -20,9 +20,9 @@ api.interceptors.response.use(
       // EVITAR BUCLE INFINITO:
       // Si la petición que falló YA ERA un intento de login o de refresh,
       // NO intentamos de nuevo. Nos rendimos y mandamos al login.
-      if (originalRequest._retry || originalRequest.url.includes('/refresh-token') || originalRequest.url.includes('/login')) {
+      if (originalRequest._retry || originalRequest.url.includes('/refresh-token') || originalRequest.url.includes('/')) {
         console.warn("Sesión expirada definitivamente. Redirigiendo al login.");
-        window.location.href = '/login'; // <--- Redirección forzada
+        window.location.href = '/'; // <--- Redirección forzada
         return Promise.reject(error);
       }
 
