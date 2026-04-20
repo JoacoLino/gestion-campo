@@ -66,7 +66,7 @@ const Resumen = () => {
                 temp: Math.round(data.current_weather.temperature),
                 code: data.current_weather.weathercode,
                 icon: getWeatherIcon(data.current_weather.weathercode),
-                city: 'Campo Actual'
+                city: ' Campo Actual'
             });
         } catch (error) {
             console.error("Error clima:", error);

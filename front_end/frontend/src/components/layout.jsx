@@ -31,8 +31,9 @@ const Layout = ({ children }) => {
     { name: 'Sanidad', path: `/dashboard/${campo_id}/sanidad`, icon: '💉' },
     { name: 'Agenda', path: `/dashboard/${campo_id}/agenda`, icon: '📅' },
     { name: 'Insumos', path: `/dashboard/${campo_id}/insumos`, icon: '📦' },
-    { name: 'Suscripcion', path: `/dashboard/${campo_id}/suscripcion`, icon: '⭐' },
+
     { name: 'Personal', path: `/dashboard/${campo_id}/personal`, icon: '👷‍♂️' },
+    {/*{ name: 'Suscripcion', path: `/dashboard/${campo_id}/suscripcion`, icon: '⭐' },*/},
   ];
 
   return (
